@@ -203,6 +203,14 @@ strong { color: var(--text-primary); font-weight: 500; }
   width: 100%;
 }
 
+.nav a.btn {
+  padding: 0.75rem 2rem;
+}
+
+.nav a.btn::after {
+  display: none;
+}
+
 .nav-toggle {
   display: none;
   background: none;
@@ -224,7 +232,7 @@ strong { color: var(--text-primary); font-weight: 500; }
    =========================================== */
 .btn {
   display: inline-block;
-  padding: 0.875rem 1.75rem;
+  padding: 0.875rem 2.25rem;
   border-radius: var(--radius);
   font-weight: 500;
   font-size: 0.95rem;
