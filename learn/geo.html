@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What is GEO? Generative Engine Optimization Explained</title>
+  <meta name="description" content="GEO (Generative Engine Optimization) explained. Learn how to optimize your website for AI-powered search engines like ChatGPT and Google AI Overview.">
+  <link rel="canonical" href="https://interon.co.za/learn/geo.html">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "What is GEO? Generative Engine Optimization Explained",
+    "description": "Learn how to optimize for AI-powered search and assistants.",
+    "author": {"@type": "Organization", "name": "Interon"},
+    "publisher": {"@type": "Organization", "name": "AI Readiness Platform"},
+    "datePublished": "2026-01-01",
+    "dateModified": "2026-01-20"
+  }
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo"><img src="/assets/images/NewLogoWhite 2.png" alt="AI Readiness"></a>
+      <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav" id="nav">
+        <a href="/learn/">Learn</a>
+        <a href="/audit.html">Free Audit</a>
+        <a href="/services/">Services</a>
+        <a href="/about.html">About</a>
+        <a href="/audit.html" class="btn btn-primary">Run Free Audit</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <nav class="mb-3" style="font-size: 0.875rem;">
+          <a href="/">Home</a> &rsaquo; <a href="/learn/">Learn</a> &rsaquo; What is GEO?
+        </nav>
+
+        <article class="prose">
+          <h1>What is GEO?</h1>
+
+          <p><strong>GEO stands for Generative Engine Optimization.</strong> It's the practice of optimising your website to appear in AI-generated answers from systems like ChatGPT, Google's AI Overview, Bing Copilot, and voice assistants.</p>
+
+          <h2>GEO vs SEO: What's the Difference?</h2>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Traditional SEO</th>
+                <th>GEO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Optimise for search result rankings</td>
+                <td>Optimise for AI-generated answers</td>
+              </tr>
+              <tr>
+                <td>Focus on keywords</td>
+                <td>Focus on clear, quotable statements</td>
+              </tr>
+              <tr>
+                <td>Get users to click your link</td>
+                <td>Get AI to cite your content</td>
+              </tr>
+              <tr>
+                <td>Compete for 10 blue links</td>
+                <td>Compete to be the source AI references</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>SEO and GEO aren't opposites. Good SEO is the foundation for good GEO. But GEO adds new considerations.</p>
+
+          <h2>How AI Search Works</h2>
+
+          <p>When someone asks ChatGPT "What's the best way to unclog a drain?", the AI:</p>
+
+          <ol>
+            <li>Searches its knowledge for relevant information</li>
+            <li>Looks for authoritative sources with clear answers</li>
+            <li>Synthesises a response, potentially citing sources</li>
+            <li>Delivers a direct answer, not a list of links</li>
+          </ol>
+
+          <p>To be included in that answer, your content needs to be:</p>
+          <ul>
+            <li><strong>Clear</strong> - Direct statements, not vague marketing</li>
+            <li><strong>Structured</strong> - Easy for AI to extract key points</li>
+            <li><strong>Authoritative</strong> - Demonstrates expertise</li>
+            <li><strong>Quotable</strong> - Contains specific, citable information</li>
+          </ul>
+
+          <h2>GEO Best Practices</h2>
+
+          <h3>1. Write Direct Answers</h3>
+          <p>Instead of burying information in marketing language, lead with clear statements:</p>
+
+          <p><strong>Weak:</strong> "Our team of dedicated professionals brings years of experience to every plumbing challenge, ensuring quality results."</p>
+
+          <p><strong>Strong:</strong> "Emergency plumbing services available 24/7 in Cape Town. Average response time: 45 minutes. Services include burst pipes, blocked drains, and geyser repairs."</p>
+
+          <h3>2. Use FAQ Format</h3>
+          <p>AI systems love question-and-answer formats. They're easy to extract and cite:</p>
+
+          <pre><code>&lt;h3&gt;How much does a plumber cost in Cape Town?&lt;/h3&gt;
+&lt;p&gt;Call-out fees typically range from R350-R500.
+Hourly rates are R450-R650 for standard work,
+with emergency rates 50% higher.&lt;/p&gt;</code></pre>
+
+          <h3>3. Include Specific Data</h3>
+          <p>AI systems prefer specific, factual information over generalities:</p>
+          <ul>
+            <li>Prices and price ranges</li>
+            <li>Service areas</li>
+            <li>Response times</li>
+            <li>Qualifications and certifications</li>
+          </ul>
+
+          <h3>4. Add FAQPage Schema</h3>
+          <p>Mark up your FAQ content with structured data so AI systems can easily identify questions and answers:</p>
+
+          <pre><code>{
+  "@type": "FAQPage",
+  "mainEntity": [{
+    "@type": "Question",
+    "name": "How much does a plumber cost?",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Call-out fees range from R350-R500..."
+    }
+  }]
+}</code></pre>
+
+          <h2>What Our Audit Checks</h2>
+
+          <p>Our GEO analysis looks for:</p>
+          <ul>
+            <li>Direct, quotable content patterns</li>
+            <li>FAQ presence and structure</li>
+            <li>FAQPage schema markup</li>
+            <li>Content clarity and extractability</li>
+            <li>Authority signals</li>
+          </ul>
+
+          <div class="text-center mt-4 mb-4">
+            <a href="/audit.html" class="btn btn-primary btn-lg">Check Your GEO Signals</a>
+          </div>
+
+          <h2>Learn More</h2>
+
+          <ul>
+            <li><a href="/learn/ai-readiness.html">What is AI Readiness?</a></li>
+            <li><a href="/learn/schema.html">Schema Markup Explained</a></li>
+            <li><a href="/learn/seo.html">SEO Fundamentals</a></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>Learn</h4>
+          <a href="/learn/ai-readiness.html">AI Readiness</a>
+          <a href="/learn/seo.html">SEO Fundamentals</a>
+          <a href="/learn/geo.html">What is GEO?</a>
+          <a href="/learn/schema.html">Schema Explained</a>
+        </div>
+        <div>
+          <h4>Tools</h4>
+          <a href="/audit.html">Free Audit</a>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <a href="/services/">What We Fix</a>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="/about.html">About</a>
+          <a href="/contact.html">Contact</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Interon. AI Readiness Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
