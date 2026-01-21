@@ -15,5 +15,4 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd C:\inetpub\wwwroot\Website
-            git pull origin main
+            cd /d C:\inetpub\wwwroot\Website && git pull origin main
