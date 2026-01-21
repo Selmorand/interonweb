@@ -32,6 +32,21 @@ $ftpUser = $config['FTP_USER']
 $ftpPass = $config['FTP_PASS']
 $ftpPath = $config['FTP_PATH']
 
+# Convert Windows path to FTP path format
+if ($ftpPath -match '^[A-Za-z]:') {
+    # Windows path like C:\inetpub\wwwroot\Website -> /inetpub/wwwroot/Website
+    $ftpPath = $ftpPath -replace '^[A-Za-z]:', ''
+    $ftpPath = $ftpPath -replace '\\', '/'
+}
+# Ensure path starts with /
+if ($ftpPath -and -not $ftpPath.StartsWith('/')) {
+    $ftpPath = "/$ftpPath"
+}
+# Ensure path ends with /
+if ($ftpPath -and -not $ftpPath.EndsWith('/')) {
+    $ftpPath = "$ftpPath/"
+}
+
 if ($ftpPass -eq 'YOUR_PASSWORD_HERE') {
     Write-Host "Please edit .env.deploy with your FTP password." -ForegroundColor Red
     exit 1
