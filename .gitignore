@@ -60,3 +60,6 @@ _ul
 error.txt
 prompt.txt
 .claude/
+
+# Deployment credentials (never commit!)
+.env.deploy
