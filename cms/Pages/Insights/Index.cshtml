@@ -1,0 +1,133 @@
+@page
+@using Microsoft.Extensions.Options
+@inject IOptions<SiteSettings> SiteSettings
+@model InteronBlog.Pages.Insights.IndexModel
+@{
+    var settings = SiteSettings.Value;
+    var pageTitle = string.IsNullOrEmpty(Model.CurrentCategory)
+        ? "Insights"
+        : $"{Model.CurrentCategoryName} - Insights";
+
+    ViewData["Title"] = pageTitle;
+    ViewData["Description"] = string.IsNullOrEmpty(Model.CurrentCategory)
+        ? $"{settings.SiteDescription}"
+        : $"Articles about {Model.CurrentCategoryName} - {settings.SiteDescription}";
+    ViewData["CanonicalUrl"] = $"{settings.SiteUrl}/insights/";
+    ViewData["OgUrl"] = $"{settings.SiteUrl}/insights/";
+    ViewData["SchemaJson"] = Model.SchemaJson;
+}
+
+<section class="section blog-header">
+    <div class="container">
+        <h1>@pageTitle</h1>
+        <p>@(string.IsNullOrEmpty(Model.CurrentCategory) ? "Insights on AI Readiness, SEO, schema markup, and digital visibility." : Model.CurrentCategoryDescription)</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <!-- Category Filter -->
+        <div class="blog-filters">
+            <a href="/insights/" class="filter-btn @(string.IsNullOrEmpty(Model.CurrentCategory) ? "active" : "")">All</a>
+            @foreach (var cat in Model.Categories)
+            {
+                <a href="/insights/?category=@cat.Slug" class="filter-btn @(Model.CurrentCategory == cat.Slug ? "active" : "")">@cat.Name</a>
+            }
+        </div>
+
+        @if (Model.Posts.Any())
+        {
+            <!-- Featured Posts (only on main page) -->
+            @if (string.IsNullOrEmpty(Model.CurrentCategory) && Model.FeaturedPosts.Any())
+            {
+                <div class="featured-posts mb-4">
+                    <h2 class="section-title">Featured</h2>
+                    <div class="grid grid-2">
+                        @foreach (var post in Model.FeaturedPosts)
+                        {
+                            <a href="/insights/@(post.Slug).html" class="card card-hover blog-card blog-card-featured">
+                                @if (!string.IsNullOrEmpty(post.FeaturedImage))
+                                {
+                                    <div class="blog-card-image">
+                                        <img src="@post.FeaturedImage" alt="@(string.IsNullOrEmpty(post.FeaturedImageAlt) ? post.Title : post.FeaturedImageAlt)" loading="lazy">
+                                    </div>
+                                }
+                                <div class="blog-card-content">
+                                    @if (!string.IsNullOrEmpty(post.Category))
+                                    {
+                                        <span class="blog-card-category">@post.Category</span>
+                                    }
+                                    <h3>@post.Title</h3>
+                                    <p>@post.GetExcerpt(150)</p>
+                                    <span class="blog-card-date">@post.PublishedAt?.ToString("MMMM d, yyyy")</span>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- All Posts -->
+            <div class="blog-posts">
+                @if (string.IsNullOrEmpty(Model.CurrentCategory) && Model.FeaturedPosts.Any())
+                {
+                    <h2 class="section-title">Latest</h2>
+                }
+                <div class="grid grid-3">
+                    @foreach (var post in Model.Posts)
+                    {
+                        <a href="/insights/@(post.Slug).html" class="card card-hover blog-card">
+                            @if (!string.IsNullOrEmpty(post.FeaturedImage))
+                            {
+                                <div class="blog-card-image">
+                                    <img src="@post.FeaturedImage" alt="@(string.IsNullOrEmpty(post.FeaturedImageAlt) ? post.Title : post.FeaturedImageAlt)" loading="lazy">
+                                </div>
+                            }
+                            <div class="blog-card-content">
+                                @if (!string.IsNullOrEmpty(post.Category))
+                                {
+                                    <span class="blog-card-category">@post.Category</span>
+                                }
+                                <h3>@post.Title</h3>
+                                <p>@post.GetExcerpt(120)</p>
+                                <span class="blog-card-date">@post.PublishedAt?.ToString("MMMM d, yyyy")</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="pagination">
+                    @if (Model.CurrentPage > 1)
+                    {
+                        <a href="/insights/?page=@(Model.CurrentPage - 1)@(string.IsNullOrEmpty(Model.CurrentCategory) ? "" : "&category=" + Model.CurrentCategory)" class="pagination-btn">Previous</a>
+                    }
+                    <span class="pagination-info">Page @Model.CurrentPage of @Model.TotalPages</span>
+                    @if (Model.CurrentPage < Model.TotalPages)
+                    {
+                        <a href="/insights/?page=@(Model.CurrentPage + 1)@(string.IsNullOrEmpty(Model.CurrentCategory) ? "" : "&category=" + Model.CurrentCategory)" class="pagination-btn">Next</a>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state text-center">
+                <p>No posts found in this category.</p>
+                <a href="/insights/" class="btn btn-secondary">View All Insights</a>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section section-alt">
+    <div class="container text-center">
+        <h2>Check Your AI Readiness</h2>
+        <p>Find out if AI systems can discover and recommend your business.</p>
+        <a href="/audit.html" class="btn btn-primary btn-lg">Run Free Audit</a>
+    </div>
+</section>

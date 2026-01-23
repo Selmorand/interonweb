@@ -1,0 +1,97 @@
+@page
+@model InteronBlog.Pages.Admin.Posts.IndexModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "All Posts";
+    ViewData["HeaderAction"] = "<a href=\"/admin/posts/create\" class=\"btn btn-primary\">New Post</a>";
+}
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-success">@Model.Message</div>
+}
+
+<div class="posts-filters">
+    <form method="get" class="filter-form">
+        <select name="status" class="form-select" onchange="this.form.submit()">
+            <option value="">All Status</option>
+            <option value="published" selected="@(Model.StatusFilter == "published")">Published</option>
+            <option value="draft" selected="@(Model.StatusFilter == "draft")">Drafts</option>
+        </select>
+        <select name="category" class="form-select" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            @foreach (var cat in Model.Categories)
+            {
+                <option value="@cat.Slug" selected="@(Model.CategoryFilter == cat.Slug)">@cat.Name</option>
+            }
+        </select>
+    </form>
+</div>
+
+@if (Model.Posts.Any())
+{
+    <div class="posts-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Views</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var post in Model.Posts)
+                {
+                    <tr>
+                        <td>
+                            <strong>@post.Title</strong>
+                            @if (post.IsFeatured)
+                            {
+                                <span class="badge badge-featured">Featured</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(post.Category))
+                            {
+                                <span class="tag">@post.Category</span>
+                            }
+                        </td>
+                        <td>
+                            @if (post.IsPublished)
+                            {
+                                <span class="status status-published">Published</span>
+                            }
+                            else
+                            {
+                                <span class="status status-draft">Draft</span>
+                            }
+                        </td>
+                        <td>@post.ViewCount</td>
+                        <td>@(post.PublishedAt?.ToString("MMM d, yyyy") ?? post.CreatedAt.ToString("MMM d, yyyy"))</td>
+                        <td class="actions">
+                            <a href="/admin/posts/edit/@post.Id" class="btn-icon" title="Edit">&#9998;</a>
+                            @if (post.IsPublished)
+                            {
+                                <a href="/insights/@(post.Slug).html" class="btn-icon" target="_blank" title="View">&#128065;</a>
+                            }
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@post.Id"
+                                  style="display:inline" onsubmit="return confirm('Are you sure you want to delete this post?')">
+                                <button type="submit" class="btn-icon btn-icon-danger" title="Delete">&#128465;</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <p>No posts found.</p>
+        <a href="/admin/posts/create" class="btn btn-primary">Create First Post</a>
+    </div>
+}

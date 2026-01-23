@@ -1,0 +1,354 @@
+/* ===========================================
+   Blog Styles
+   =========================================== */
+
+/* Blog Header */
+.blog-header {
+    padding: 8rem 0 3rem;
+    text-align: center;
+}
+
+.blog-header h1 {
+    margin-bottom: 1rem;
+}
+
+.blog-header p {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Blog Filters */
+.blog-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.filter-btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 2rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    transition: all var(--transition-base);
+    text-decoration: none;
+}
+
+.filter-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.filter-btn.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: white;
+}
+
+/* Section Title */
+.section-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+}
+
+/* Blog Cards */
+.blog-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    overflow: hidden;
+}
+
+.blog-card:hover {
+    text-decoration: none;
+}
+
+.blog-card-image {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    margin: -2rem -2rem 1.5rem;
+}
+
+.blog-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.blog-card:hover .blog-card-image img {
+    transform: scale(1.05);
+}
+
+.blog-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-card-category {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-cyan);
+    margin-bottom: 0.5rem;
+}
+
+.blog-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    transition: color var(--transition-base);
+}
+
+.blog-card:hover h3 {
+    color: var(--accent-cyan);
+}
+
+.blog-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    flex: 1;
+}
+
+.blog-card-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Featured Posts */
+.blog-card-featured {
+    padding: 0;
+}
+
+.blog-card-featured .blog-card-image {
+    margin: 0;
+    aspect-ratio: 16/10;
+}
+
+.blog-card-featured .blog-card-content {
+    padding: 1.5rem;
+}
+
+.blog-card-featured h3 {
+    font-size: 1.25rem;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.pagination-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-base);
+}
+
+.pagination-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.pagination-info {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* ===========================================
+   Blog Post Page
+   =========================================== */
+
+/* Breadcrumb */
+.breadcrumb {
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.breadcrumb a {
+    color: var(--text-muted);
+}
+
+.breadcrumb a:hover {
+    color: var(--text-primary);
+}
+
+.breadcrumb-sep {
+    color: var(--text-muted);
+    margin: 0 0.5rem;
+}
+
+/* Post Header */
+.blog-post-header {
+    padding: 8rem 0 2rem;
+}
+
+.post-category {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-cyan);
+    margin-bottom: 1rem;
+}
+
+.blog-post-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    max-width: 900px;
+}
+
+.post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.post-date {
+    color: var(--text-secondary);
+}
+
+.post-tags {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.post-tags .tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* Featured Image */
+.blog-post-image {
+    padding: 0 0 2rem;
+}
+
+.featured-image {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    border-radius: var(--radius-lg);
+    margin: 0 auto;
+    display: block;
+}
+
+/* Post Content */
+.blog-post-content {
+    padding: 2rem 0 4rem;
+}
+
+.blog-post-content .prose {
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+.blog-post-content .prose img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    margin: 2rem 0;
+}
+
+.blog-post-content .prose h2 {
+    font-size: 1.75rem;
+    margin-top: 3rem;
+}
+
+.blog-post-content .prose h3 {
+    font-size: 1.35rem;
+    margin-top: 2.5rem;
+}
+
+/* Share */
+.post-share {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--glass-border);
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.post-share span {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.share-btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all var(--transition-base);
+}
+
+.share-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .blog-header {
+        padding: 6rem 0 2rem;
+    }
+
+    .blog-post-header {
+        padding: 6rem 0 1.5rem;
+    }
+
+    .blog-post-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .blog-filters {
+        justify-content: center;
+    }
+
+    .filter-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .post-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .post-share {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

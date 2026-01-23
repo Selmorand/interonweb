@@ -1,0 +1,33 @@
+# Build results
+bin/
+obj/
+publish/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+*.rsuser
+
+# Rider
+.idea/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Uploads (optional - uncomment to track uploads)
+# wwwroot/uploads/
+
+# appsettings overrides (keep template, ignore local)
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json

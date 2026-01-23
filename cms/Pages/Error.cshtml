@@ -1,0 +1,26 @@
+@page
+@model InteronBlog.Pages.ErrorModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Error";
+    ViewData["Description"] = "An error occurred";
+}
+
+<section class="section" style="padding-top: 8rem;">
+    <div class="container text-center">
+        <h1>Oops! Something went wrong</h1>
+        <p>We're sorry, but an error occurred while processing your request.</p>
+
+        @if (Model.ShowRequestId)
+        {
+            <p class="text-muted">
+                <strong>Request ID:</strong> <code>@Model.RequestId</code>
+            </p>
+        }
+
+        <div class="action-buttons">
+            <a href="/" class="btn btn-primary">Go Home</a>
+            <a href="/blog/" class="btn btn-secondary">View Blog</a>
+        </div>
+    </div>
+</section>

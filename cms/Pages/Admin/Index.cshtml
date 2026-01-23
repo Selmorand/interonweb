@@ -1,0 +1,107 @@
+@page
+@model InteronBlog.Pages.Admin.IndexModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-value">@Model.Stats.TotalPosts</div>
+        <div class="stat-label">Total Posts</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value stat-published">@Model.Stats.PublishedPosts</div>
+        <div class="stat-label">Published</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value stat-draft">@Model.Stats.DraftPosts</div>
+        <div class="stat-label">Drafts</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">@Model.Stats.TotalViews</div>
+        <div class="stat-label">Total Views</div>
+    </div>
+</div>
+
+<div class="admin-section">
+    <div class="admin-section-header">
+        <h2>Recent Posts</h2>
+        <a href="/admin/posts/create" class="btn btn-primary">New Post</a>
+    </div>
+
+    @if (Model.RecentPosts.Any())
+    {
+        <div class="posts-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Model.RecentPosts)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@post.Title</strong>
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(post.Category))
+                                {
+                                    <span class="tag">@post.Category</span>
+                                }
+                            </td>
+                            <td>
+                                @if (post.IsPublished)
+                                {
+                                    <span class="status status-published">Published</span>
+                                }
+                                else
+                                {
+                                    <span class="status status-draft">Draft</span>
+                                }
+                            </td>
+                            <td>@(post.PublishedAt?.ToString("MMM d, yyyy") ?? post.CreatedAt.ToString("MMM d, yyyy"))</td>
+                            <td class="actions">
+                                <a href="/admin/posts/edit/@post.Id" class="btn-icon" title="Edit">&#9998;</a>
+                                @if (post.IsPublished)
+                                {
+                                    <a href="/insights/@(post.Slug).html" class="btn-icon" target="_blank" title="View">&#128065;</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <a href="/admin/posts" class="btn btn-secondary">View All Posts</a>
+    }
+    else
+    {
+        <div class="empty-state">
+            <p>No posts yet. Create your first post to get started!</p>
+            <a href="/admin/posts/create" class="btn btn-primary">Create First Post</a>
+        </div>
+    }
+</div>
+
+@if (Model.Stats.PostsByCategory.Any())
+{
+    <div class="admin-section">
+        <h2>Posts by Category</h2>
+        <div class="category-stats">
+            @foreach (var cat in Model.Stats.PostsByCategory.OrderByDescending(c => c.Value))
+            {
+                <div class="category-stat-item">
+                    <span class="category-name">@cat.Key</span>
+                    <span class="category-count">@cat.Value post@(cat.Value != 1 ? "s" : "")</span>
+                </div>
+            }
+        </div>
+    </div>
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/admin.css">
+
+    @await RenderSectionAsync("Head", required: false)
+</head>
+<body class="admin-body">
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <a href="/admin/">
+                    <img src="/assets/images/NewLogoWhite 2.png" alt="Interon Blog Admin">
+                </a>
+            </div>
+            <nav class="admin-nav">
+                <a href="/admin/" class="admin-nav-item @(ViewContext.RouteData.Values["page"]?.ToString() == "/Admin/Index" ? "active" : "")">
+                    <span class="admin-nav-icon">&#128202;</span>
+                    Dashboard
+                </a>
+                <a href="/admin/posts" class="admin-nav-item @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Admin/Posts") == true ? "active" : "")">
+                    <span class="admin-nav-icon">&#128221;</span>
+                    Posts
+                </a>
+                <a href="/admin/posts/create" class="admin-nav-item @(ViewContext.RouteData.Values["page"]?.ToString() == "/Admin/Posts/Create" ? "active" : "")">
+                    <span class="admin-nav-icon">&#10133;</span>
+                    New Post
+                </a>
+                <div class="admin-nav-divider"></div>
+                <a href="/insights/" class="admin-nav-item" target="_blank">
+                    <span class="admin-nav-icon">&#128065;</span>
+                    View Insights
+                </a>
+                <a href="/" class="admin-nav-item" target="_blank">
+                    <span class="admin-nav-icon">&#127968;</span>
+                    View Site
+                </a>
+                <div class="admin-nav-divider"></div>
+                <form method="post" asp-page="/Admin/Logout" class="admin-logout-form">
+                    <button type="submit" class="admin-nav-item admin-logout-btn">
+                        <span class="admin-nav-icon">&#128682;</span>
+                        Logout
+                    </button>
+                </form>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>@ViewData["Title"]</h1>
+                @if (ViewData["HeaderAction"] != null)
+                {
+                    @Html.Raw(ViewData["HeaderAction"])
+                }
+            </header>
+            <div class="admin-content">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

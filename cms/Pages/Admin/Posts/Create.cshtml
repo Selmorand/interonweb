@@ -1,0 +1,196 @@
+@page
+@model InteronBlog.Pages.Admin.Posts.CreateModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Create New Post";
+}
+
+@section Head {
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <style>
+        .ql-editor { min-height: 300px; background: var(--bg-surface); color: var(--text-primary); }
+        .ql-toolbar { background: var(--bg-elevated); border-color: var(--glass-border) !important; }
+        .ql-container { border-color: var(--glass-border) !important; font-size: 1rem; }
+        .ql-toolbar button, .ql-toolbar .ql-picker { color: var(--text-secondary); }
+        .ql-toolbar button:hover, .ql-toolbar .ql-picker:hover { color: var(--text-primary); }
+        .ql-toolbar .ql-stroke { stroke: var(--text-secondary); }
+        .ql-toolbar .ql-fill { fill: var(--text-secondary); }
+        .ql-toolbar button:hover .ql-stroke { stroke: var(--text-primary); }
+        .ql-toolbar button:hover .ql-fill { fill: var(--text-primary); }
+        .ql-toolbar .ql-picker-options { background: var(--bg-elevated); }
+    </style>
+}
+
+<form method="post" enctype="multipart/form-data" class="post-form">
+    <div class="form-grid">
+        <div class="form-main">
+            <div class="form-group">
+                <label for="Title" class="form-label">Title *</label>
+                <input type="text" id="Title" name="Post.Title" value="@Model.Post.Title"
+                       class="form-input" required placeholder="Enter post title">
+                <span asp-validation-for="Post.Title" class="validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Slug" class="form-label">Slug (URL)</label>
+                <input type="text" id="Slug" name="Post.Slug" value="@Model.Post.Slug"
+                       class="form-input" placeholder="auto-generated-from-title">
+                <small class="form-hint">Leave empty to auto-generate from title</small>
+            </div>
+
+            <div class="form-group">
+                <label for="Excerpt" class="form-label">Excerpt</label>
+                <textarea id="Excerpt" name="Post.Excerpt" class="form-textarea" rows="3"
+                          placeholder="Brief summary for listings (optional)">@Model.Post.Excerpt</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Content *</label>
+                <div id="editor">@Html.Raw(Model.Post.Content)</div>
+                <input type="hidden" id="Content" name="Post.Content" value="@Model.Post.Content">
+            </div>
+
+            <div class="seo-section card">
+                <h3>SEO Settings</h3>
+                <div class="form-group">
+                    <label for="MetaTitle" class="form-label">Meta Title</label>
+                    <input type="text" id="MetaTitle" name="Post.MetaTitle" value="@Model.Post.MetaTitle"
+                           class="form-input" placeholder="Leave empty to use post title">
+                    <small class="form-hint">Recommended: 50-60 characters</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="MetaDescription" class="form-label">Meta Description</label>
+                    <textarea id="MetaDescription" name="Post.MetaDescription" class="form-textarea" rows="2"
+                              placeholder="Leave empty to use excerpt">@Model.Post.MetaDescription</textarea>
+                    <small class="form-hint">Recommended: 150-160 characters</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-sidebar">
+            <div class="sidebar-card">
+                <h3>Publish</h3>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="Post.IsPublished" value="true" @(Model.Post.IsPublished ? "checked" : "")>
+                        Publish immediately
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="Post.IsFeatured" value="true" @(Model.Post.IsFeatured ? "checked" : "")>
+                        Featured post
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Post</button>
+                    <a href="/admin/posts" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>Category</h3>
+                <div class="form-group">
+                    <select name="Post.Category" class="form-select">
+                        <option value="">Select category</option>
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat.Slug" selected="@(Model.Post.Category == cat.Slug)">@cat.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>Tags</h3>
+                <div class="form-group">
+                    <input type="text" id="TagsInput" name="TagsString" value="@Model.TagsString"
+                           class="form-input" placeholder="tag1, tag2, tag3">
+                    <small class="form-hint">Separate tags with commas</small>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>Featured Image</h3>
+                <div class="form-group">
+                    <input type="file" id="FeaturedImageFile" name="FeaturedImageFile"
+                           class="form-input" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="FeaturedImageUrl" class="form-label">Or enter URL</label>
+                    <input type="text" id="FeaturedImageUrl" name="Post.FeaturedImage"
+                           value="@Model.Post.FeaturedImage" class="form-input"
+                           placeholder="/uploads/images/...">
+                </div>
+                <div id="image-preview" class="image-preview">
+                    @if (!string.IsNullOrEmpty(Model.Post.FeaturedImage))
+                    {
+                        <img src="@Model.Post.FeaturedImage" alt="Preview">
+                    }
+                </div>
+                <div class="form-group">
+                    <label for="FeaturedImageAlt" class="form-label">Alt Text</label>
+                    <input type="text" id="FeaturedImageAlt" name="Post.FeaturedImageAlt"
+                           value="@Model.Post.FeaturedImageAlt" class="form-input"
+                           placeholder="Describe the image">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-error">@Model.ErrorMessage</div>
+}
+
+@section Scripts {
+    <script>
+        var quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Sync editor content to hidden input on form submit
+        document.querySelector('form').addEventListener('submit', function() {
+            document.getElementById('Content').value = quill.root.innerHTML;
+        });
+
+        // Auto-generate slug from title
+        document.getElementById('Title').addEventListener('blur', function() {
+            var slugField = document.getElementById('Slug');
+            if (!slugField.value) {
+                var slug = this.value.toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim();
+                slugField.value = slug;
+            }
+        });
+
+        // Image preview
+        document.getElementById('FeaturedImageFile').addEventListener('change', function(e) {
+            var preview = document.getElementById('image-preview');
+            var file = e.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview">';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

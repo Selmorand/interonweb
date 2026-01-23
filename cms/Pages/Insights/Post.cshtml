@@ -1,0 +1,142 @@
+@page "{slug}"
+@using Microsoft.Extensions.Options
+@inject IOptions<SiteSettings> SiteSettings
+@model InteronBlog.Pages.Insights.PostModel
+@{
+    var settings = SiteSettings.Value;
+
+    if (Model.Post == null)
+    {
+        ViewData["Title"] = "Post Not Found";
+        ViewData["Description"] = "The requested article could not be found.";
+    }
+    else
+    {
+        ViewData["Title"] = Model.Post.GetMetaTitle();
+        ViewData["Description"] = Model.Post.GetMetaDescription();
+        ViewData["CanonicalUrl"] = $"{settings.SiteUrl}/insights/{Model.Post.Slug}.html";
+        ViewData["OgUrl"] = $"{settings.SiteUrl}/insights/{Model.Post.Slug}.html";
+        ViewData["OgType"] = "article";
+        if (!string.IsNullOrEmpty(Model.Post.FeaturedImage))
+        {
+            var imageUrl = Model.Post.FeaturedImage.StartsWith("http")
+                ? Model.Post.FeaturedImage
+                : $"{settings.SiteUrl}{Model.Post.FeaturedImage}";
+            ViewData["OgImage"] = imageUrl;
+        }
+        ViewData["SchemaJson"] = Model.SchemaJson;
+    }
+}
+
+@if (Model.Post == null)
+{
+    <section class="section">
+        <div class="container text-center">
+            <h1>Post Not Found</h1>
+            <p>Sorry, the article you're looking for doesn't exist or has been removed.</p>
+            <a href="/insights/" class="btn btn-primary">Back to Insights</a>
+        </div>
+    </section>
+}
+else
+{
+    <!-- Hero / Header -->
+    <section class="section blog-post-header">
+        <div class="container">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <span class="breadcrumb-sep">/</span>
+                <a href="/insights/">Insights</a>
+                @if (!string.IsNullOrEmpty(Model.Post.Category))
+                {
+                    <span class="breadcrumb-sep">/</span>
+                    <a href="/insights/?category=@Model.Post.Category">@Model.CategoryName</a>
+                }
+            </nav>
+
+            @if (!string.IsNullOrEmpty(Model.Post.Category))
+            {
+                <span class="post-category">@Model.CategoryName</span>
+            }
+            <h1>@Model.Post.Title</h1>
+
+            <div class="post-meta">
+                <span class="post-date">@Model.Post.PublishedAt?.ToString("MMMM d, yyyy")</span>
+                @if (Model.Post.Tags.Any())
+                {
+                    <span class="post-tags">
+                        @foreach (var tag in Model.Post.Tags)
+                        {
+                            <span class="tag">@tag</span>
+                        }
+                    </span>
+                }
+            </div>
+        </div>
+    </section>
+
+    @if (!string.IsNullOrEmpty(Model.Post.FeaturedImage))
+    {
+        <section class="blog-post-image">
+            <div class="container">
+                <img src="@Model.Post.FeaturedImage"
+                     alt="@(string.IsNullOrEmpty(Model.Post.FeaturedImageAlt) ? Model.Post.Title : Model.Post.FeaturedImageAlt)"
+                     class="featured-image">
+            </div>
+        </section>
+    }
+
+    <!-- Content -->
+    <section class="section blog-post-content">
+        <div class="container">
+            <article class="prose">
+                @Html.Raw(Model.Post.Content)
+            </article>
+
+            <!-- Share -->
+            <div class="post-share">
+                <span>Share this article:</span>
+                <a href="https://twitter.com/intent/tweet?text=@Uri.EscapeDataString(Model.Post.Title)&url=@Uri.EscapeDataString($"{settings.SiteUrl}/insights/{Model.Post.Slug}.html")"
+                   target="_blank" rel="noopener noreferrer" class="share-btn">Twitter</a>
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url=@Uri.EscapeDataString($"{settings.SiteUrl}/insights/{Model.Post.Slug}.html")&title=@Uri.EscapeDataString(Model.Post.Title)"
+                   target="_blank" rel="noopener noreferrer" class="share-btn">LinkedIn</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Posts -->
+    @if (Model.RelatedPosts.Any())
+    {
+        <section class="section section-alt">
+            <div class="container">
+                <h2>Related Insights</h2>
+                <div class="grid grid-3">
+                    @foreach (var post in Model.RelatedPosts)
+                    {
+                        <a href="/insights/@(post.Slug).html" class="card card-hover blog-card">
+                            @if (!string.IsNullOrEmpty(post.FeaturedImage))
+                            {
+                                <div class="blog-card-image">
+                                    <img src="@post.FeaturedImage" alt="@post.Title" loading="lazy">
+                                </div>
+                            }
+                            <div class="blog-card-content">
+                                <h3>@post.Title</h3>
+                                <p>@post.GetExcerpt(100)</p>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- CTA -->
+    <section class="section">
+        <div class="container text-center">
+            <h2>Ready to Improve Your AI Readiness?</h2>
+            <p>Get your free audit and see how machines view your business.</p>
+            <a href="/audit.html" class="btn btn-primary btn-lg">Run Free Audit</a>
+        </div>
+    </section>
+}

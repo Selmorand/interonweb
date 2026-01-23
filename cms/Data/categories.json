@@ -1,0 +1,37 @@
+[
+  {
+    "id": "ai-readiness",
+    "name": "AI Readiness",
+    "slug": "ai-readiness",
+    "description": "Understanding and improving your business's AI discoverability",
+    "sortOrder": 1
+  },
+  {
+    "id": "schema-markup",
+    "name": "Schema Markup",
+    "slug": "schema-markup",
+    "description": "Implementing structured data for better machine understanding",
+    "sortOrder": 2
+  },
+  {
+    "id": "seo",
+    "name": "SEO",
+    "slug": "seo",
+    "description": "Search engine optimization strategies and best practices",
+    "sortOrder": 3
+  },
+  {
+    "id": "geo",
+    "name": "GEO",
+    "slug": "geo",
+    "description": "Generative Engine Optimization for AI-powered search",
+    "sortOrder": 4
+  },
+  {
+    "id": "case-studies",
+    "name": "Case Studies",
+    "slug": "case-studies",
+    "description": "Real-world examples and success stories",
+    "sortOrder": 5
+  }
+]
