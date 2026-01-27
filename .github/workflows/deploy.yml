@@ -21,9 +21,9 @@ jobs:
           script: |
             echo "Starting deployment..."
             echo "Current directory: $(pwd)"
-            cd C:\repos\Website || exit 1
+            cd /c/repos/Website || exit 1
             echo "Changed to: $(pwd)"
             git pull origin main || exit 1
             echo "Git pull completed"
-            powershell.exe -ExecutionPolicy Bypass -NoProfile -File .\auto-deploy.ps1
+            powershell.exe -ExecutionPolicy Bypass -NoProfile -File ./auto-deploy.ps1
             echo "Deployment script completed with exit code: $?"
