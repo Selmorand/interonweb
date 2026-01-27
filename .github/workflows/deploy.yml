@@ -18,8 +18,9 @@ jobs:
             cd /d C:\inetpub\wwwroot\Website
             git fetch origin main
             git reset --hard origin/main
-            git clean -fd
+            git clean -fdx
             cd cms
+            if (Test-Path publish) { Remove-Item -Recurse -Force publish }
             dotnet restore
-            dotnet publish -c Release -o publish
+            dotnet publish -c Release -o publish --no-self-contained
             powershell -Command "Restart-WebAppPool -Name 'InsightsPool'"
