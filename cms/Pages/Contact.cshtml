@@ -1,0 +1,50 @@
+@page
+@model InteronBlog.Pages.ContactModel
+@{
+    ViewData["Title"] = "Contact Us";
+    ViewData["Description"] = "Contact the AI Readiness team for questions about AI readiness, schema implementation, or our services.";
+    ViewData["CanonicalUrl"] = "https://interon.co.za/contact/";
+    ViewData["SchemaJson"] = @"{
+  ""@context"": ""https://schema.org"",
+  ""@type"": ""ContactPage"",
+  ""name"": ""Contact AI Readiness Platform"",
+  ""description"": ""Get in touch with questions about AI readiness or our services.""
+}";
+}
+
+<section class="section">
+  <div class="container">
+    <div style="max-width: 600px; margin: 0 auto;">
+      <h1>Contact Us</h1>
+      <p class="mb-4">Have questions about AI Readiness or want to discuss our services? Get in touch.</p>
+
+      <div class="card mb-4">
+        <h2>Email</h2>
+        <p>For general enquiries and service questions:</p>
+        <p><a href="mailto:hello@interon.co.za">hello@interon.co.za</a></p>
+      </div>
+
+      <div class="card mb-4">
+        <h2>Before You Contact Us</h2>
+        <p>To help us understand your needs better:</p>
+        <ol>
+          <li><a href="/audit/">Run the free audit</a> on your website</li>
+          <li>Review your results and recommendations</li>
+          <li>Note which findings you'd like help with</li>
+        </ol>
+        <p>This helps us provide specific, relevant advice rather than generic responses.</p>
+      </div>
+
+      <div class="card" style="background: var(--bg-alt);">
+        <h2>What to Expect</h2>
+        <p>We typically respond within 1 business day. When you contact us about services, we'll:</p>
+        <ul>
+          <li>Review your audit results (if you've run one)</li>
+          <li>Ask clarifying questions about your business</li>
+          <li>Provide a specific quote based on your needs</li>
+        </ul>
+        <p>No pressure, no hard sell. We're here to help you understand your options.</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,264 @@
+@page
+@model InteronBlog.Pages.AuditModel
+@{
+    ViewData["Title"] = "Free AI Readiness Audit - Check Your Website";
+    ViewData["Description"] = "Run a free AI Readiness audit on your website. Check your schema markup, SEO fundamentals, and GEO signals. Get actionable recommendations in seconds.";
+    ViewData["CanonicalUrl"] = "https://interon.co.za/audit/";
+    ViewData["OgType"] = "website";
+    ViewData["OgUrl"] = "https://interon.co.za/audit/";
+    ViewData["SchemaJson"] = @"{
+  ""@context"": ""https://schema.org"",
+  ""@type"": ""WebApplication"",
+  ""name"": ""AI Readiness Audit Tool"",
+  ""description"": ""Free tool to analyze your website's AI readiness, schema markup, SEO fundamentals, and GEO signals."",
+  ""url"": ""https://interon.co.za/audit/"",
+  ""applicationCategory"": ""BusinessApplication"",
+  ""operatingSystem"": ""Web Browser"",
+  ""offers"": {
+    ""@type"": ""Offer"",
+    ""price"": ""0"",
+    ""priceCurrency"": ""ZAR""
+  },
+  ""featureList"": [
+    ""AI Readiness Analysis"",
+    ""Schema Markup Detection"",
+    ""SEO Fundamentals Check"",
+    ""GEO Signal Analysis"",
+    ""Printable Reports""
+  ]
+}";
+}
+
+@section Head {
+  <meta property="og:title" content="Free AI Readiness Audit">
+  <meta property="og:description" content="Check if AI systems can find and recommend your business. Free audit with actionable recommendations.">
+}
+
+@section Scripts {
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="/assets/js/audit.js"></script>
+}
+
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h1>Free AI Readiness Audit</h1>
+      <p>Enter your website URL to check if AI systems can understand your business.</p>
+    </div>
+
+    <!-- Audit Form -->
+    <div class="audit-form" id="audit-form-container">
+      <div class="audit-input-group">
+        <input
+          type="url"
+          id="url-input"
+          class="audit-input"
+          placeholder="https://example.com"
+          aria-label="Website URL"
+        >
+        <button class="btn btn-primary btn-lg" id="audit-btn" onclick="runAudit()">
+          Audit Site
+        </button>
+      </div>
+      <p class="text-center text-muted">We check AI readiness, schema markup, SEO, and GEO signals.</p>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" class="hidden">
+      <div class="loading">
+        <div class="spinner"></div>
+      </div>
+      <p class="text-center text-muted">Analyzing your website... This may take a few seconds.</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="hidden">
+      <div class="alert alert-error">
+        <strong>Error:</strong> <span id="error-message"></span>
+      </div>
+      <p class="text-center mt-2">
+        <button class="btn btn-secondary" onclick="resetAudit()">Try Again</button>
+      </p>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden">
+      <div id="report-content">
+        <!-- Success Header -->
+        <div data-pdf-section="header" class="result-header card mb-4">
+          <div class="result-header-content">
+            <div class="result-header-left">
+              <span class="result-check">&#10003;</span>
+              <div>
+                <h2>Analysis Complete</h2>
+                <p id="result-url" class="text-muted"></p>
+              </div>
+            </div>
+            <div class="result-header-right">
+              <span class="load-time-label">Load Time</span>
+              <span id="load-time" class="load-time-value">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overall Score -->
+        <div data-pdf-section="overall" id="overall-score-card" class="card card-score mb-4">
+          <div class="score-display">
+            <p class="score-title">Overall Website Score</p>
+            <div class="score-circle">
+              <svg class="score-ring" width="200" height="200">
+                <circle class="score-ring-bg" cx="100" cy="100" r="85" />
+                <circle id="score-ring-progress" class="score-ring-progress" cx="100" cy="100" r="85" />
+              </svg>
+              <div class="score-circle-inner">
+                <span id="score-value" class="score-value">--</span>
+                <span class="score-max">/ 100</span>
+              </div>
+            </div>
+            <div id="score-level" class="score-level"></div>
+          </div>
+        </div>
+
+        <!-- Score Cards Grid -->
+        <div data-pdf-section="scores-grid" class="scores-grid mb-4">
+          <!-- AI Readiness -->
+          <div class="card score-card score-card-blue">
+            <div class="score-card-header">
+              <h3>AI Readiness</h3>
+              <span class="score-card-icon">&#129302;</span>
+            </div>
+            <div class="score-card-value">
+              <span id="ai-score" class="big-score">--</span>
+              <span class="score-suffix">/100</span>
+            </div>
+            <div id="ai-level" class="score-card-level"></div>
+            <p id="ai-interpretation" class="score-card-desc"></p>
+            <div id="ai-breakdown" class="score-breakdown"></div>
+          </div>
+
+          <!-- SEO -->
+          <div class="card score-card score-card-green">
+            <div class="score-card-header">
+              <h3>SEO</h3>
+              <span class="score-card-icon">&#128200;</span>
+            </div>
+            <div class="score-card-value">
+              <span id="seo-score" class="big-score">--</span>
+              <span class="score-suffix">/100</span>
+            </div>
+            <div id="seo-level" class="score-card-level"></div>
+            <p id="seo-interpretation" class="score-card-desc"></p>
+            <div id="seo-breakdown" class="score-breakdown"></div>
+          </div>
+
+          <!-- GEO -->
+          <div class="card score-card score-card-purple">
+            <div class="score-card-header">
+              <h3>GEO</h3>
+              <span class="score-card-icon">&#127919;</span>
+            </div>
+            <div class="score-card-value">
+              <span id="geo-score" class="big-score">--</span>
+              <span class="score-suffix">/100</span>
+            </div>
+            <div id="geo-level" class="score-card-level"></div>
+            <p id="geo-interpretation" class="score-card-desc"></p>
+            <div id="geo-breakdown" class="score-breakdown"></div>
+          </div>
+        </div>
+
+        <!-- AI Insights -->
+        <div data-pdf-section="ai-insights" id="ai-insights" class="card card-insights mb-4 hidden">
+          <div class="card-title-row">
+            <span class="card-icon">&#129302;</span>
+            <h2>AI Analysis Insights</h2>
+          </div>
+          <div id="insights-grid" class="insights-grid"></div>
+        </div>
+
+        <!-- Schema Analysis -->
+        <div data-pdf-section="schema-header" id="schema-section" class="card mb-4 hidden">
+          <div class="card-title-row">
+            <span class="card-icon">&#128203;</span>
+            <div>
+              <h2>Schema.org Analysis</h2>
+              <p class="text-muted">How AI systems understand your business</p>
+            </div>
+            <div class="schema-score-badge">
+              <span id="schema-score" class="schema-score-value">--</span>
+              <span class="schema-score-label">Schema Score</span>
+            </div>
+          </div>
+
+          <!-- Can AI List Services -->
+          <div id="ai-services-check" class="ai-services-check mb-3"></div>
+
+          <!-- Schema Types -->
+          <div class="schema-types-grid mb-3">
+            <div class="schema-types-present">
+              <h4><span>&#10003;</span> Detected Schema Types</h4>
+              <div id="present-types" class="schema-tags"></div>
+            </div>
+            <div class="schema-types-missing">
+              <h4><span>&#10007;</span> Missing Critical Types</h4>
+              <div id="missing-types" class="schema-tags"></div>
+            </div>
+          </div>
+
+          <!-- Schema Assessments -->
+          <div id="schema-assessments" class="schema-assessments mb-3"></div>
+
+          <!-- Schema Improvements -->
+          <div id="schema-improvements"></div>
+        </div>
+
+        <!-- Recommendations -->
+        <div id="recommendations-section" class="card card-recommendations mb-4 hidden">
+          <div data-pdf-section="recommendations-header" class="card-title-row">
+            <span class="card-icon">&#127919;</span>
+            <div>
+              <h2>Priority Recommendations</h2>
+              <p class="text-muted">Actionable steps to improve your score</p>
+            </div>
+          </div>
+          <div id="recommendations"></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="action-buttons" data-pdf-exclude>
+        <button class="btn btn-primary" onclick="exportPDF()" id="export-pdf-btn">
+          <span id="export-pdf-text">Export PDF</span>
+        </button>
+        <button class="btn btn-secondary" onclick="resetAudit()">Run New Audit</button>
+        <a href="/contact/" class="btn btn-primary">Get Help Implementing</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="section section-alt" id="how-it-works">
+  <div class="container">
+    <h2 class="text-center mb-4">What We Check</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>AI Readiness (30%)</h3>
+        <p>Can AI systems determine what your business does? We check for clear business identity, service descriptions, and machine-extractable information.</p>
+      </div>
+      <div class="card">
+        <h3>Schema Markup (25%)</h3>
+        <p>Do you have structured data? We detect JSON-LD markup and check for critical types: Organization, Service, Product, LocalBusiness, and more.</p>
+      </div>
+      <div class="card">
+        <h3>SEO Fundamentals (25%)</h3>
+        <p>Is your technical foundation solid? We check title tags, meta descriptions, heading structure, HTTPS, and mobile-friendliness.</p>
+      </div>
+      <div class="card">
+        <h3>GEO Signals (20%)</h3>
+        <p>Are you optimized for AI answers? We look for FAQ content, direct answer patterns, and content that AI can cite in responses.</p>
+      </div>
+    </div>
+  </div>
+</section>

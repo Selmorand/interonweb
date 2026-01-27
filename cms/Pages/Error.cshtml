@@ -2,14 +2,14 @@
 @model InteronBlog.Pages.ErrorModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Error";
-    ViewData["Description"] = "An error occurred";
+    ViewData["Title"] = "Page Not Found";
+    ViewData["Description"] = "The page you're looking for doesn't exist or has been moved.";
 }
 
-<section class="section" style="padding-top: 8rem;">
+<section class="section">
     <div class="container text-center">
-        <h1>Oops! Something went wrong</h1>
-        <p>We're sorry, but an error occurred while processing your request.</p>
+        <h1>Page Not Found</h1>
+        <p>The page you're looking for doesn't exist or has been moved.</p>
 
         @if (Model.ShowRequestId)
         {
@@ -18,9 +18,9 @@
             </p>
         }
 
-        <div class="action-buttons">
-            <a href="/" class="btn btn-primary">Go Home</a>
-            <a href="/blog/" class="btn btn-secondary">View Blog</a>
+        <div class="mt-4">
+            <a href="/" class="btn btn-primary">Go to Homepage</a>
+            <a href="/audit/" class="btn btn-secondary">Run Free Audit</a>
         </div>
     </div>
 </section>

@@ -1,0 +1,64 @@
+@page
+@model InteronBlog.Pages.Learn.IndexModel
+@{
+    ViewData["Title"] = "Learn About AI Readiness - Educational Resources";
+    ViewData["Description"] = "Learn about AI Readiness, SEO fundamentals, schema markup, and Generative Engine Optimization. Free educational resources for business owners.";
+    ViewData["CanonicalUrl"] = "https://interon.co.za/learn/";
+    ViewData["SchemaJson"] = @"{
+  ""@context"": ""https://schema.org"",
+  ""@type"": ""CollectionPage"",
+  ""name"": ""AI Readiness Learning Resources"",
+  ""description"": ""Educational content about AI Readiness, SEO, schema markup, and GEO for business owners."",
+  ""url"": ""https://interon.co.za/learn/"",
+  ""mainEntity"": {
+    ""@type"": ""ItemList"",
+    ""itemListElement"": [
+      {""@type"": ""ListItem"", ""position"": 1, ""name"": ""What is AI Readiness?"", ""url"": ""https://interon.co.za/learn/ai-readiness/""},
+      {""@type"": ""ListItem"", ""position"": 2, ""name"": ""Schema Markup Explained"", ""url"": ""https://interon.co.za/learn/schema/""},
+      {""@type"": ""ListItem"", ""position"": 3, ""name"": ""What is GEO?"", ""url"": ""https://interon.co.za/learn/geo/""},
+      {""@type"": ""ListItem"", ""position"": 4, ""name"": ""SEO Fundamentals"", ""url"": ""https://interon.co.za/learn/seo/""}
+    ]
+  }
+}";
+}
+
+<section class="section">
+  <div class="container">
+    <h1>Learn About AI Readiness</h1>
+    <p class="mb-4">Understand how AI systems find and recommend businesses. These guides explain concepts in plain English for business owners, not developers.</p>
+
+    <div class="card mb-3" style="background: var(--primary-light); border-color: var(--primary);">
+      <h3>Start Here</h3>
+      <p>New to AI Readiness? Begin with our foundational guide that explains why this matters for your business.</p>
+      <a href="/learn/ai-readiness/" class="btn btn-primary">What is AI Readiness?</a>
+    </div>
+
+    <h2 class="mb-3">All Topics</h2>
+    <div class="grid grid-2">
+      <a href="/learn/ai-readiness/" class="card card-hover learn-card">
+        <h3>What is AI Readiness?</h3>
+        <p>Understanding why machines need structured information to find and recommend your business.</p>
+      </a>
+
+      <a href="/learn/schema/" class="card card-hover learn-card">
+        <h3>Schema Markup Explained</h3>
+        <p>Learn how structured data helps AI systems understand what your business does.</p>
+      </a>
+
+      <a href="/learn/geo/" class="card card-hover learn-card">
+        <h3>What is GEO?</h3>
+        <p>Generative Engine Optimization - making your business discoverable by AI systems.</p>
+      </a>
+
+      <a href="/learn/seo/" class="card card-hover learn-card">
+        <h3>SEO Fundamentals</h3>
+        <p>The technical foundation that AI Readiness builds upon.</p>
+      </a>
+    </div>
+
+    <div class="text-center mt-4">
+      <p>Ready to check your AI Readiness?</p>
+      <a href="/audit/" class="btn btn-primary">Run Free Audit</a>
+    </div>
+  </div>
+</section>

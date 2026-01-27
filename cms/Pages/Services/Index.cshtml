@@ -1,0 +1,104 @@
+@page
+@model InteronBlog.Pages.Services.IndexModel
+@{
+    ViewData["Title"] = "AI Readiness Services - Schema Implementation & Optimization";
+    ViewData["Description"] = "Professional AI Readiness services including schema markup implementation, SEO optimization, and structured data setup for businesses.";
+    ViewData["CanonicalUrl"] = "https://interon.co.za/services/";
+    ViewData["SchemaJson"] = @"{
+  ""@context"": ""https://schema.org"",
+  ""@type"": ""Service"",
+  ""name"": ""AI Readiness Services"",
+  ""provider"": {
+    ""@type"": ""Organization"",
+    ""name"": ""AI Readiness Platform""
+  },
+  ""description"": ""Professional services to make your business machine-readable through schema implementation and AI optimization."",
+  ""serviceType"": ""Digital Marketing"",
+  ""hasOfferCatalog"": {
+    ""@type"": ""OfferCatalog"",
+    ""name"": ""AI Readiness Service Packages"",
+    ""itemListElement"": [
+      {
+        ""@type"": ""Offer"",
+        ""itemOffered"": {
+          ""@type"": ""Service"",
+          ""name"": ""Schema Implementation"",
+          ""description"": ""Professional implementation of Organization, LocalBusiness, Service, and Product schema.""
+        }
+      },
+      {
+        ""@type"": ""Offer"",
+        ""itemOffered"": {
+          ""@type"": ""Service"",
+          ""name"": ""Full AI Readiness Package"",
+          ""description"": ""Complete optimization including schema, content restructuring, and GEO optimization.""
+        }
+      }
+    ]
+  }
+}";
+}
+
+<section class="section">
+  <div class="container">
+    <h1>AI Readiness Services</h1>
+    <p class="mb-4">For businesses that want professional help implementing AI Readiness improvements. All services are based on your specific audit results and needs.</p>
+
+    <div class="grid grid-2 mb-4">
+      <div class="card">
+        <h2>Schema Implementation</h2>
+        <p>We implement the structured data your website needs:</p>
+        <ul>
+          <li>Organization / LocalBusiness schema</li>
+          <li>Service and Product schema</li>
+          <li>FAQPage schema</li>
+          <li>OfferCatalog for service grouping</li>
+          <li>knowsAbout expertise signals</li>
+        </ul>
+        <p>Includes validation, testing, and documentation.</p>
+      </div>
+
+      <div class="card">
+        <h2>Full AI Readiness Package</h2>
+        <p>Complete optimization for AI discoverability:</p>
+        <ul>
+          <li>All schema implementation</li>
+          <li>Content restructuring for AI extraction</li>
+          <li>FAQ content creation with schema</li>
+          <li>Technical SEO fixes</li>
+          <li>GEO optimization</li>
+        </ul>
+        <p>Comprehensive service for maximum AI visibility.</p>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <h2>How It Works</h2>
+      <ol>
+        <li><strong>Run the free audit</strong> - See exactly what your site needs</li>
+        <li><strong>Review your report</strong> - Understand the findings and recommendations</li>
+        <li><strong>Contact us</strong> - Discuss which improvements matter most for your business</li>
+        <li><strong>Get a quote</strong> - We provide specific pricing based on your needs</li>
+        <li><strong>We implement</strong> - Professional implementation with testing and validation</li>
+      </ol>
+    </div>
+
+    <div class="card mb-4" style="background: var(--bg-alt);">
+      <h2>Pricing Approach</h2>
+      <p>We quote based on your specific situation because every website is different. Factors include:</p>
+      <ul>
+        <li>Number of pages requiring schema</li>
+        <li>Complexity of your services/products</li>
+        <li>Current technical state</li>
+        <li>Content restructuring needs</li>
+      </ul>
+      <p>Run the free audit first, then contact us for a specific quote based on your results.</p>
+    </div>
+
+    <div class="text-center">
+      <p>Not sure what you need? Start with the free audit.</p>
+      <a href="/audit/" class="btn btn-primary btn-lg">Run Free Audit</a>
+      <a href="/contact/" class="btn btn-secondary btn-lg">Contact Us</a>
+    </div>
+  </div>
+</section>

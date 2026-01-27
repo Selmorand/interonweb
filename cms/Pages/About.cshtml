@@ -1,0 +1,67 @@
+@page
+@model InteronBlog.Pages.AboutModel
+@{
+    ViewData["Title"] = "About";
+    ViewData["Description"] = "Learn about the AI Readiness Platform. We help businesses become machine-readable through education and practical tools.";
+    ViewData["CanonicalUrl"] = "https://interon.co.za/about/";
+    ViewData["SchemaJson"] = @"{
+  ""@context"": ""https://schema.org"",
+  ""@type"": ""AboutPage"",
+  ""name"": ""About AI Readiness Platform"",
+  ""description"": ""Learn about our mission to help businesses become AI-ready."",
+  ""mainEntity"": {
+    ""@type"": ""Organization"",
+    ""name"": ""AI Readiness Platform"",
+    ""description"": ""We help businesses become machine-readable through education, free audit tools, and professional services.""
+  }
+}";
+}
+
+<section class="section">
+  <div class="container">
+    <article class="prose" style="max-width: 800px; margin: 0 auto;">
+      <h1>About AI Readiness Platform</h1>
+
+      <p>We help businesses become machine-readable. That means making your online presence understandable to AI systems like ChatGPT, Google's AI Overview, and voice assistants.</p>
+
+      <h2>Our Approach</h2>
+
+      <p><strong>Education first.</strong> We believe informed business owners make better decisions. Our free audit tool and educational content exist to help you understand AI Readiness, whether or not you ever use our services.</p>
+
+      <p><strong>No hype.</strong> AI is changing how people discover businesses. That's real. But we don't use fear tactics or exaggerated claims. We explain what's actually happening and what you can practically do about it.</p>
+
+      <p><strong>Transparency.</strong> Our audit shows exactly what we check and how we score. No black boxes, no mysterious algorithms. You can see our methodology and understand why each element matters.</p>
+
+      <h2>What We Believe</h2>
+
+      <ul>
+        <li>Every business should understand how AI systems find and recommend companies</li>
+        <li>Structured data (schema markup) is the foundation of machine readability</li>
+        <li>Good AI Readiness builds on solid SEO fundamentals, not replaces them</li>
+        <li>Business owners shouldn't need to be technical to understand what they need</li>
+      </ul>
+
+      <h2>The Free Audit</h2>
+
+      <p>Our audit tool is genuinely free. No email required, no hidden upsells in the results. We built it because we believe businesses should be able to check their AI Readiness without commitment.</p>
+
+      <p>The audit checks four areas:</p>
+      <ul>
+        <li><strong>AI Readiness</strong> - Can machines understand your business?</li>
+        <li><strong>Schema Markup</strong> - Do you have structured data?</li>
+        <li><strong>SEO Fundamentals</strong> - Is your technical foundation solid?</li>
+        <li><strong>GEO Signals</strong> - Are you optimised for AI answers?</li>
+      </ul>
+
+      <h2>Professional Services</h2>
+
+      <p>For businesses that want help implementing recommendations, we offer professional services. But we'll never pressure you. The audit results speak for themselves, and you can decide if you want to fix things yourself or get help.</p>
+
+      <p><a href="/services/">View our services</a> or <a href="/contact/">contact us</a> with questions.</p>
+
+      <div class="text-center mt-4">
+        <a href="/audit/" class="btn btn-primary btn-lg">Try the Free Audit</a>
+      </div>
+    </article>
+  </div>
+</section>

@@ -22,7 +22,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = "InteronBlog.Auth";
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-        options.Cookie.Path = "/cms";
+        options.Cookie.Path = "/";
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
         options.SlidingExpiration = true;
     });
@@ -38,9 +38,6 @@ builder.Services.AddSingleton<SchemaService>();
 builder.Services.Configure<SiteSettings>(builder.Configuration.GetSection("SiteSettings"));
 
 var app = builder.Build();
-
-// Configure path base for IIS sub-application
-app.UsePathBase("/cms");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
