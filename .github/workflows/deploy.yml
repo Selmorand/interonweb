@@ -19,6 +19,11 @@ jobs:
           command_timeout: 15m
           script_stop: false
           script: |
-            cd C:\repos\Website
-            git pull origin main
-            powershell.exe -ExecutionPolicy Bypass -File .\auto-deploy.ps1
+            echo "Starting deployment..."
+            echo "Current directory: $(pwd)"
+            cd C:\repos\Website || exit 1
+            echo "Changed to: $(pwd)"
+            git pull origin main || exit 1
+            echo "Git pull completed"
+            powershell.exe -ExecutionPolicy Bypass -NoProfile -File .\auto-deploy.ps1
+            echo "Deployment script completed with exit code: $?"
