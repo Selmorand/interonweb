@@ -21,6 +21,7 @@ if (-not (Test-Path "C:\inetpub")) {
 Write-Host "[1/7] Locating code repository on server..." -ForegroundColor Yellow
 
 $possiblePaths = @(
+    "C:\repos\Website",
     "C:\inetpub\wwwroot\Website",
     "C:\Users\Administrator\Website",
     "C:\Website",
@@ -55,7 +56,7 @@ Write-Host "[2/7] Pulling latest code from GitHub..." -ForegroundColor Yellow
 Set-Location $repoPath
 git fetch origin main
 git reset --hard origin/main
-Write-Host "  ✓ Code updated" -ForegroundColor Green
+Write-Host "  [OK] Code updated" -ForegroundColor Green
 
 # Step 3: Build and publish
 Write-Host ""
@@ -66,9 +67,9 @@ dotnet restore
 dotnet publish -c Release -o "C:\inetpub\wwwroot\InteronWeb\publish" --no-self-contained
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "  ✓ Build successful" -ForegroundColor Green
+    Write-Host "  [OK] Build successful" -ForegroundColor Green
 } else {
-    Write-Host "  ✗ Build failed!" -ForegroundColor Red
+    Write-Host "  [FAILED] Build failed!" -ForegroundColor Red
     pause
     exit 1
 }
@@ -76,15 +77,16 @@ if ($LASTEXITCODE -eq 0) {
 # Step 4: Verify CSS file
 Write-Host ""
 Write-Host "[4/7] Verifying deployment..." -ForegroundColor Yellow
-if (Test-Path "C:\inetpub\wwwroot\InteronWeb\publish\wwwroot\assets\css\styles.css") {
-    $cssContent = Get-Content "C:\inetpub\wwwroot\InteronWeb\publish\wwwroot\assets\css\styles.css" -Raw
+$cssPath = "C:\inetpub\wwwroot\InteronWeb\publish\wwwroot\assets\css\styles.css"
+if (Test-Path $cssPath) {
+    $cssContent = Get-Content $cssPath -Raw
     if ($cssContent -match 'Main content area') {
-        Write-Host "  ✓ CSS file with latest changes deployed" -ForegroundColor Green
+        Write-Host "  [OK] CSS file with latest changes deployed" -ForegroundColor Green
     } else {
-        Write-Host "  ! CSS file exists but may not have latest changes" -ForegroundColor Yellow
+        Write-Host "  [WARNING] CSS file exists but may not have latest changes" -ForegroundColor Yellow
     }
 } else {
-    Write-Host "  ✗ WARNING: CSS file missing!" -ForegroundColor Red
+    Write-Host "  [WARNING] CSS file missing!" -ForegroundColor Red
 }
 
 # Step 5: Configure IIS
@@ -117,7 +119,7 @@ if ($oldApp) {
 Set-ItemProperty "IIS:\Sites\Default Web Site" -Name physicalPath -Value "C:\inetpub\wwwroot\InteronWeb\publish"
 Set-ItemProperty "IIS:\Sites\Default Web Site" -Name applicationPool -Value "InsightsPool"
 
-Write-Host "  ✓ IIS configured" -ForegroundColor Green
+Write-Host "  [OK] IIS configured" -ForegroundColor Green
 Write-Host "    New site path: C:\inetpub\wwwroot\InteronWeb\publish" -ForegroundColor Gray
 
 # Step 6: Start app pool
@@ -125,7 +127,7 @@ Write-Host ""
 Write-Host "[6/7] Starting application..." -ForegroundColor Yellow
 Start-WebAppPool -Name 'InsightsPool'
 Start-Sleep -Seconds 5
-Write-Host "  ✓ App pool started" -ForegroundColor Green
+Write-Host "  [OK] App pool started" -ForegroundColor Green
 
 # Step 7: Test
 Write-Host ""
@@ -133,19 +135,19 @@ Write-Host "[7/7] Testing deployment..." -ForegroundColor Yellow
 try {
     $response = Invoke-WebRequest -Uri "https://interon.co.za/" -UseBasicParsing -TimeoutSec 10
     if ($response.StatusCode -eq 200) {
-        Write-Host "  ✓ Site responding with HTTP 200" -ForegroundColor Green
+        Write-Host "  [OK] Site responding with HTTP 200" -ForegroundColor Green
     }
 
     # Test CSS
     $cssResponse = Invoke-WebRequest -Uri "https://interon.co.za/assets/css/styles.css" -UseBasicParsing -TimeoutSec 10
     if ($cssResponse.StatusCode -eq 200 -and $cssResponse.Content -match 'Main content area') {
-        Write-Host "  ✓ CSS file accessible with latest changes" -ForegroundColor Green
+        Write-Host "  [OK] CSS file accessible with latest changes" -ForegroundColor Green
     } else {
-        Write-Host "  ! CSS may need browser cache clear" -ForegroundColor Yellow
+        Write-Host "  [WARNING] CSS may need browser cache clear" -ForegroundColor Yellow
     }
 }
 catch {
-    Write-Host "  ✗ Site test failed: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "  [FAILED] Site test failed: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 Write-Host ""
