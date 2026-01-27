@@ -3,6 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches: [main]
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
 
 jobs:
   deploy:
@@ -15,22 +16,33 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
+          command_timeout: 10m
           script: |
             powershell -Command "
+            Write-Host 'Starting deployment...' -ForegroundColor Cyan
+
             if (-not (Test-Path C:\inetpub\wwwroot\InteronWeb)) {
               New-Item -ItemType Directory -Path C:\inetpub\wwwroot\InteronWeb -Force | Out-Null
             }
 
             Set-Location 'C:\Users\George\OneDrive - Interon\I\Interon\2026\Website'
 
+            Write-Host 'Pulling latest code...'
             git fetch origin main
             git reset --hard origin/main
             git clean -fdx
 
+            Write-Host 'Building application...'
             Set-Location cms
             dotnet restore
             dotnet publish -c Release -o C:\inetpub\wwwroot\InteronWeb\publish --no-self-contained
 
+            if (`$LASTEXITCODE -ne 0) {
+              Write-Host 'Build failed!' -ForegroundColor Red
+              exit 1
+            }
+
+            Write-Host 'Configuring IIS...'
             Import-Module WebAdministration
 
             `$oldApp = Get-WebApplication -Site 'Default Web Site' -Name 'cms' -ErrorAction SilentlyContinue
@@ -42,14 +54,17 @@ jobs:
             Set-ItemProperty 'IIS:\Sites\Default Web Site' -Name physicalPath -Value 'C:\inetpub\wwwroot\InteronWeb\publish'
             Set-ItemProperty 'IIS:\Sites\Default Web Site' -Name applicationPool -Value 'InsightsPool'
 
+            Write-Host 'Restarting app pool...'
             Restart-WebAppPool -Name 'InsightsPool'
 
             Start-Sleep -Seconds 5
+
+            Write-Host 'Testing deployment...'
             `$response = Invoke-WebRequest -Uri 'https://interon.co.za/' -UseBasicParsing -TimeoutSec 10 -ErrorAction SilentlyContinue
             if (`$response.StatusCode -eq 200) {
-              Write-Host 'Deployment successful! Site is responding'
+              Write-Host 'Deployment successful! Site is responding' -ForegroundColor Green
             } else {
-              Write-Host 'WARNING: Site test failed'
+              Write-Host 'WARNING: Site test failed' -ForegroundColor Red
               exit 1
             }
             "
