@@ -78,7 +78,7 @@ Write-Host ""
 Write-Host "[4/7] Verifying deployment..." -ForegroundColor Yellow
 if (Test-Path "C:\inetpub\wwwroot\InteronWeb\publish\wwwroot\assets\css\styles.css") {
     $cssContent = Get-Content "C:\inetpub\wwwroot\InteronWeb\publish\wwwroot\assets\css\styles.css" -Raw
-    if ($cssContent -match "Main content area") {
+    if ($cssContent -match 'Main content area') {
         Write-Host "  ✓ CSS file with latest changes deployed" -ForegroundColor Green
     } else {
         Write-Host "  ! CSS file exists but may not have latest changes" -ForegroundColor Yellow
@@ -138,7 +138,7 @@ try {
 
     # Test CSS
     $cssResponse = Invoke-WebRequest -Uri "https://interon.co.za/assets/css/styles.css" -UseBasicParsing -TimeoutSec 10
-    if ($cssResponse.StatusCode -eq 200 -and $cssResponse.Content -match "Main content area") {
+    if ($cssResponse.StatusCode -eq 200 -and $cssResponse.Content -match 'Main content area') {
         Write-Host "  ✓ CSS file accessible with latest changes" -ForegroundColor Green
     } else {
         Write-Host "  ! CSS may need browser cache clear" -ForegroundColor Yellow
