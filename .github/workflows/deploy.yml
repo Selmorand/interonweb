@@ -14,46 +14,42 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
           script: |
-            # Create target directory if it doesn't exist
+            powershell -Command "
             if (-not (Test-Path C:\inetpub\wwwroot\InteronWeb)) {
-              New-Item -ItemType Directory -Path C:\inetpub\wwwroot\InteronWeb
+              New-Item -ItemType Directory -Path C:\inetpub\wwwroot\InteronWeb -Force | Out-Null
             }
 
-            cd /d C:\Users\$env:USERNAME\AppData\Local\InteronWebDeploy
+            Set-Location 'C:\Users\George\OneDrive - Interon\I\Interon\2026\Website'
 
-            # Pull latest code
-            if (-not (Test-Path .git)) {
-              git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git .
-            }
             git fetch origin main
             git reset --hard origin/main
             git clean -fdx
 
-            # Build and publish to clean location
-            cd cms
+            Set-Location cms
             dotnet restore
             dotnet publish -c Release -o C:\inetpub\wwwroot\InteronWeb\publish --no-self-contained
 
-            # Verify IIS configuration
             Import-Module WebAdministration
-            $site = Get-Website -Name "Default Web Site" -ErrorAction SilentlyContinue
-            if ($site) {
-              if ($site.PhysicalPath -ne "C:\inetpub\wwwroot\InteronWeb\publish") {
-                Write-Host "Updating IIS site path to C:\inetpub\wwwroot\InteronWeb\publish"
-                Set-ItemProperty "IIS:\Sites\Default Web Site" -Name physicalPath -Value "C:\inetpub\wwwroot\InteronWeb\publish"
-              }
-              Write-Host "IIS configuration verified: Default Web Site -> C:\inetpub\wwwroot\InteronWeb\publish"
+
+            `$oldApp = Get-WebApplication -Site 'Default Web Site' -Name 'cms' -ErrorAction SilentlyContinue
+            if (`$oldApp) {
+              Remove-WebApplication -Site 'Default Web Site' -Name 'cms'
+              Write-Host 'Removed old /cms sub-application'
             }
 
-            # Restart app pool
-            Restart-WebAppPool -Name 'DefaultAppPool'
+            Set-ItemProperty 'IIS:\Sites\Default Web Site' -Name physicalPath -Value 'C:\inetpub\wwwroot\InteronWeb\publish'
+            Set-ItemProperty 'IIS:\Sites\Default Web Site' -Name applicationPool -Value 'InsightsPool'
 
-            # Wait for app to start and verify it's running
+            Restart-WebAppPool -Name 'InsightsPool'
+
             Start-Sleep -Seconds 5
-            $response = Invoke-WebRequest -Uri "https://interon.co.za/" -UseBasicParsing -ErrorAction SilentlyContinue
-            if ($response.StatusCode -eq 200) {
-              Write-Host "Deployment successful! Site is responding with HTTP 200"
+            `$response = Invoke-WebRequest -Uri 'https://interon.co.za/' -UseBasicParsing -TimeoutSec 10 -ErrorAction SilentlyContinue
+            if (`$response.StatusCode -eq 200) {
+              Write-Host 'Deployment successful! Site is responding'
             } else {
-              Write-Host "WARNING: Site may not be responding correctly"
+              Write-Host 'WARNING: Site test failed'
+              exit 1
             }
+            "
