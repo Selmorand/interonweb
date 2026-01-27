@@ -16,11 +16,40 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /d C:\inetpub\wwwroot\Website
+
+            # Pull latest code
             git fetch origin main
             git reset --hard origin/main
             git clean -fdx
+
+            # Build and publish
             cd cms
             if (Test-Path publish) { Remove-Item -Recurse -Force publish }
             dotnet restore
             dotnet publish -c Release -o publish --no-self-contained
-            powershell -Command "Restart-WebAppPool -Name 'InsightsPool'"
+
+            # Verify IIS configuration is correct (don't fail deployment if check fails)
+            Import-Module WebAdministration
+            $app = Get-WebApplication -Site "Default Web Site" -Name "cms" -ErrorAction SilentlyContinue
+            if (-not $app) {
+              Write-Host "WARNING: IIS application /cms does not exist. Creating it..."
+              cd C:\Windows\System32\inetsrv
+              .\appcmd.exe add app /site.name:"Default Web Site" /path:/cms /physicalPath:"C:\inetpub\wwwroot\Website\cms\publish"
+              .\appcmd.exe set app "Default Web Site/cms" /applicationPool:InsightsPool
+            } elseif ($app.PhysicalPath -ne "C:\inetpub\wwwroot\Website\cms\publish") {
+              Write-Host "WARNING: IIS application path is incorrect. Expected C:\inetpub\wwwroot\Website\cms\publish but got $($app.PhysicalPath)"
+            } else {
+              Write-Host "IIS configuration verified: /cms -> C:\inetpub\wwwroot\Website\cms\publish"
+            }
+
+            # Restart app pool
+            Restart-WebAppPool -Name 'InsightsPool'
+
+            # Wait for app to start and verify it's running
+            Start-Sleep -Seconds 5
+            $response = Invoke-WebRequest -Uri "https://interon.co.za/cms/" -UseBasicParsing -ErrorAction SilentlyContinue
+            if ($response.StatusCode -eq 200) {
+              Write-Host "Deployment successful! Site is responding with HTTP 200"
+            } else {
+              Write-Host "WARNING: Site may not be responding correctly"
+            }
