@@ -15,4 +15,11 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /d C:\inetpub\wwwroot\Website && git pull origin main
+            cd /d C:\inetpub\wwwroot\Website
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
+            cd cms
+            dotnet restore
+            dotnet publish -c Release -o publish
+            powershell -Command "Restart-WebAppPool -Name 'InsightsPool'"
