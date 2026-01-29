@@ -125,7 +125,7 @@ strong { color: var(--text-primary); font-weight: 500; }
 }
 
 .section {
-  padding: 5rem 0;
+  padding: 1rem 0;
   position: relative;
 }
 

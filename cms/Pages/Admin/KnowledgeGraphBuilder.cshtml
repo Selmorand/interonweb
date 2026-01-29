@@ -1,0 +1,251 @@
+@page
+@model InteronBlog.Pages.Admin.KnowledgeGraphBuilderModel
+@{
+    ViewData["Title"] = "Knowledge Graph Builder";
+    ViewData["Description"] = "Transform any website into a structured knowledge graph with AI-powered entity extraction and relationship mapping.";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+@section Head {
+<style>
+  .progress-container {
+    margin: 2rem 0;
+  }
+
+  .progress-bar-wrapper {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-surface);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    transition: width 0.3s ease-out;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .status-pending { background: rgba(245, 127, 32, 0.15); color: var(--accent-orange); }
+  .status-progress { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+  .status-completed { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+  .status-failed { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+  .entity-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    margin: 0.25rem;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--glass-border);
+  }
+
+  .export-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .export-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+  }
+
+  .export-card:hover {
+    border-color: var(--accent-blue);
+    box-shadow: var(--shadow-glow-blue);
+  }
+
+  .export-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+</style>
+}
+
+<div class="container">
+  <h1 class="mb-4">Knowledge Graph Builder</h1>
+  <p class="text-secondary mb-4">Extract structured knowledge from any website. Build entity graphs, discover relationships, and generate Q&A datasets.</p>
+
+  <!-- Input Form -->
+  <div id="form-container" class="card mb-4">
+    <h2 class="mb-3">Start New Crawl</h2>
+
+    <div class="mb-3">
+      <label for="url-input" class="form-label">Website URL</label>
+      <input
+        type="url"
+        id="url-input"
+        class="audit-input"
+        placeholder="https://example.com"
+        aria-label="Website URL"
+      >
+    </div>
+
+    <div class="grid grid-2 mb-3">
+      <div>
+        <label for="max-depth" class="form-label">Max Depth (0-10)</label>
+        <input
+          type="number"
+          id="max-depth"
+          class="audit-input"
+          value="3"
+          min="0"
+          max="10"
+        >
+        <small class="text-muted">How many levels deep to crawl</small>
+      </div>
+
+      <div>
+        <label for="max-pages" class="form-label">Max Pages (1-1000)</label>
+        <input
+          type="number"
+          id="max-pages"
+          class="audit-input"
+          value="100"
+          min="1"
+          max="1000"
+        >
+        <small class="text-muted">Maximum number of pages to crawl</small>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="start-crawl-btn" onclick="startCrawl()">
+      <span id="start-btn-text">Start Crawl</span>
+    </button>
+  </div>
+
+  <!-- Progress Display -->
+  <div id="progress-container" class="card mb-4 hidden">
+    <h2 class="mb-3">Crawl Progress</h2>
+
+    <div class="mb-3">
+      <div class="flex justify-between mb-2">
+        <span>Status: <span id="status-badge" class="status-badge"></span></span>
+        <span id="pages-processed">0 / 0 pages</span>
+      </div>
+      <div class="progress-bar-wrapper">
+        <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <p id="progress-message" class="text-muted"></p>
+  </div>
+
+  <!-- Error Display -->
+  <div id="error-container" class="hidden">
+    <div class="alert alert-error">
+      <strong>Error:</strong> <span id="error-message"></span>
+    </div>
+    <button class="btn btn-secondary" onclick="resetForm()">Try Again</button>
+  </div>
+
+  <!-- Results Display -->
+  <div id="results-container" class="hidden">
+    <!-- Summary Stats -->
+    <div class="card mb-4">
+      <h2 class="mb-3">Analysis Summary</h2>
+      <div class="grid grid-3">
+        <div class="text-center">
+          <div class="feature-icon">📄</div>
+          <h3 id="total-pages" class="mb-1">--</h3>
+          <p class="text-muted">Pages Crawled</p>
+        </div>
+        <div class="text-center">
+          <div class="feature-icon">🏢</div>
+          <h3 id="total-entities" class="mb-1">--</h3>
+          <p class="text-muted">Entities Found</p>
+        </div>
+        <div class="text-center">
+          <div class="feature-icon">🔗</div>
+          <h3 id="total-relationships" class="mb-1">--</h3>
+          <p class="text-muted">Relationships</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entity Types -->
+    <div class="card mb-4">
+      <h2 class="mb-3">Entity Distribution</h2>
+      <div id="entity-types-container"></div>
+    </div>
+
+    <!-- Top Entities -->
+    <div class="card mb-4">
+      <h2 class="mb-3">Most Connected Entities</h2>
+      <div id="top-entities-container"></div>
+    </div>
+
+    <!-- Export Options -->
+    <div class="card mb-4">
+      <h2 class="mb-3">Export Knowledge Graph</h2>
+      <div class="export-grid">
+        <div class="export-card" onclick="viewReport()">
+          <div class="export-icon">📊</div>
+          <h4>View Report</h4>
+          <p class="text-muted">Interactive HTML</p>
+        </div>
+        <div class="export-card" onclick="exportPDF()">
+          <div class="export-icon">📄</div>
+          <h4>PDF Report</h4>
+          <p class="text-muted">Print-ready</p>
+        </div>
+        <div class="export-card" onclick="exportJSON()">
+          <div class="export-icon">🤖</div>
+          <h4>JSON Data</h4>
+          <p class="text-muted">AI-ready format</p>
+        </div>
+        <div class="export-card" onclick="exportCSV('pages')">
+          <div class="export-icon">📊</div>
+          <h4>Pages CSV</h4>
+          <p class="text-muted">Page data</p>
+        </div>
+        <div class="export-card" onclick="exportCSV('entities')">
+          <div class="export-icon">🏢</div>
+          <h4>Entities CSV</h4>
+          <p class="text-muted">Entity data</p>
+        </div>
+        <div class="export-card" onclick="exportCSV('relationships')">
+          <div class="export-icon">🔗</div>
+          <h4>Relations CSV</h4>
+          <p class="text-muted">Relationship data</p>
+        </div>
+        <div class="export-card" onclick="exportQuestions('json')">
+          <div class="export-icon">❓</div>
+          <h4>Questions JSON</h4>
+          <p class="text-muted">Q&A dataset</p>
+        </div>
+        <div class="export-card" onclick="exportQuestions('csv')">
+          <div class="export-icon">📋</div>
+          <h4>Questions CSV</h4>
+          <p class="text-muted">Q&A spreadsheet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn btn-secondary" onclick="resetForm()">Build Another</button>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+  <script src="/assets/js/knowledge-graph-builder.js"></script>
+}
