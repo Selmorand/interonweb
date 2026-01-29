@@ -64,6 +64,14 @@ prompt.txt
 # Deployment credentials (never commit!)
 .env.deploy
 
-# Build artifacts
+# .NET Build artifacts
+cms/bin/
+cms/obj/
+cms/publish/
 cms/.publish-temp/
 cms/publish-temp/
+
+# Old/demo files
+DEMO.html
+Integrate.txt
+Website.sln
