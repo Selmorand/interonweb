@@ -17,7 +17,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           command_timeout: 15m
-          script_stop: false
+          script_stop: true
           script: |
             echo "Starting deployment..."
             echo "Current directory: $(pwd)"
@@ -25,5 +25,5 @@ jobs:
             echo "Changed to: $(pwd)"
             git pull origin main || exit 1
             echo "Git pull completed"
-            powershell.exe -ExecutionPolicy Bypass -NoProfile -File ./auto-deploy.ps1
-            echo "Deployment script completed with exit code: $?"
+            powershell.exe -ExecutionPolicy Bypass -NoProfile -File ./auto-deploy.ps1 || exit 1
+            echo "Deployment completed successfully!"
