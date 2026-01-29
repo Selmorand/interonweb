@@ -63,3 +63,7 @@ prompt.txt
 
 # Deployment credentials (never commit!)
 .env.deploy
+
+# Build artifacts
+cms/.publish-temp/
+cms/publish-temp/

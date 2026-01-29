@@ -182,22 +182,33 @@ async function fetchAndDisplayResults() {
   if (!currentSiteId) return;
 
   try {
-    // Fetch summary statistics
-    const summaryResponse = await fetch(`${API_URL}/api/graph/summary?siteId=${currentSiteId}`);
+    // Fetch all data in parallel
+    const [summaryResponse, pagesResponse, entitiesResponse, relationsResponse, questionsResponse] = await Promise.all([
+      fetch(`${API_URL}/api/graph/summary?siteId=${currentSiteId}`),
+      fetch(`${API_URL}/api/pages?siteId=${currentSiteId}&limit=1000`),
+      fetch(`${API_URL}/api/graph/entities?siteId=${currentSiteId}&limit=1000`),
+      fetch(`${API_URL}/api/graph/relations?siteId=${currentSiteId}&limit=1000`),
+      fetch(`${API_URL}/api/questions/${currentSiteId}?limit=1000`)
+    ]);
 
     if (!summaryResponse.ok) {
       throw new Error('Failed to fetch summary');
     }
 
     const summary = await summaryResponse.json();
-
-    // Fetch pages count
-    const pagesResponse = await fetch(`${API_URL}/api/pages?siteId=${currentSiteId}&limit=1`);
     const pagesData = await pagesResponse.json();
-    const totalPages = pagesData.pagination?.total || 0;
+    const entitiesData = await entitiesResponse.json();
+    const relationsData = await relationsResponse.json();
+    const questionsData = await questionsResponse.json();
 
-    // Display results
-    displayResults(summary, totalPages);
+    // Display all sections
+    displaySiteOverview(summary);
+    displayResults(summary, pagesData.pagination?.total || 0, questionsData.total || 0);
+    displayPages(pagesData.pages || []);
+    displayEntities(entitiesData.entities || [], summary.entityCountByType || []);
+    displayRelationships(relationsData.relations || []);
+    displayQuestions(questionsData.questions || []);
+
     hideProgress();
     showResults();
     enableForm();
@@ -209,27 +220,31 @@ async function fetchAndDisplayResults() {
   }
 }
 
+// Display site overview
+function displaySiteOverview(summary) {
+  const domain = summary.domain || currentSiteId;
+  const url = summary.rootUrl || '--';
+  const crawlDate = summary.crawlDate ? new Date(summary.crawlDate).toLocaleString() : new Date().toLocaleString();
+  const status = summary.status || 'COMPLETED';
+
+  document.getElementById('site-domain').textContent = domain;
+  document.getElementById('site-url').textContent = url;
+  document.getElementById('crawl-date').textContent = crawlDate;
+
+  const statusBadge = document.getElementById('site-status');
+  statusBadge.textContent = status;
+  statusBadge.className = 'status-badge status-' + status.toLowerCase();
+}
+
 // Display results in UI
-function displayResults(summary, totalPages) {
+function displayResults(summary, totalPages, totalQuestions) {
   // Update summary stats
   document.getElementById('total-pages').textContent = totalPages;
   document.getElementById('total-entities').textContent = summary.totalEntities || 0;
   document.getElementById('total-relationships').textContent = summary.totalRelations || 0;
-
-  // Display entity types
-  const entityTypesContainer = document.getElementById('entity-types-container');
-  entityTypesContainer.innerHTML = '';
-
-  if (summary.entityCountByType && summary.entityCountByType.length > 0) {
-    summary.entityCountByType.forEach(({ type, count }) => {
-      const tag = document.createElement('span');
-      tag.className = 'entity-tag';
-      tag.textContent = `${type}: ${count}`;
-      entityTypesContainer.appendChild(tag);
-    });
-  } else {
-    entityTypesContainer.innerHTML = '<p class="text-muted">No entities found</p>';
-  }
+  document.getElementById('total-questions').textContent = totalQuestions;
+  document.getElementById('max-depth-reached').textContent = summary.maxDepthReached || '--';
+  document.getElementById('crawl-duration').textContent = summary.duration || '--';
 
   // Display top entities
   const topEntitiesContainer = document.getElementById('top-entities-container');
@@ -250,6 +265,180 @@ function displayResults(summary, totalPages) {
     topEntitiesContainer.appendChild(list);
   } else {
     topEntitiesContainer.innerHTML = '<p class="text-muted">No connected entities found</p>';
+  }
+}
+
+// Display pages
+function displayPages(pages) {
+  const tbody = document.getElementById('pages-table-body');
+  tbody.innerHTML = '';
+
+  if (pages.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No pages found</td></tr>';
+    return;
+  }
+
+  pages.forEach(page => {
+    const row = document.createElement('tr');
+    const url = page.url || '--';
+    const title = page.title || 'Untitled';
+    const depth = page.depth ?? '--';
+    const entityCount = page.entityCount || 0;
+    const status = page.status || 'SUCCESS';
+
+    row.innerHTML = `
+      <td><a href="${url}" target="_blank" style="color: var(--accent-blue); text-decoration: none;">${truncate(url, 60)}</a></td>
+      <td>${truncate(title, 50)}</td>
+      <td>${depth}</td>
+      <td>${entityCount}</td>
+      <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+// Display entities
+function displayEntities(entities, entityTypes) {
+  // Display entity type distribution
+  const entityTypesContainer = document.getElementById('entity-types-container');
+  entityTypesContainer.innerHTML = '';
+
+  if (entityTypes && entityTypes.length > 0) {
+    entityTypes.forEach(({ type, count }) => {
+      const tag = document.createElement('span');
+      tag.className = 'entity-tag';
+      tag.textContent = `${type}: ${count}`;
+      entityTypesContainer.appendChild(tag);
+    });
+  } else {
+    entityTypesContainer.innerHTML = '<p class="text-muted">No entities found</p>';
+  }
+
+  // Display entities table
+  const tbody = document.getElementById('entities-table-body');
+  tbody.innerHTML = '';
+
+  if (entities.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No entities found</td></tr>';
+    return;
+  }
+
+  entities.forEach(entity => {
+    const row = document.createElement('tr');
+    const name = entity.name || '--';
+    const type = entity.type || '--';
+    const confidence = entity.confidence || 0;
+    const mentions = entity.mentions || 0;
+    const relationshipCount = entity.relationshipCount || 0;
+
+    const confidenceClass = confidence >= 0.8 ? 'confidence-high' : confidence >= 0.5 ? 'confidence-medium' : 'confidence-low';
+
+    row.innerHTML = `
+      <td><strong>${name}</strong></td>
+      <td><span class="entity-tag">${type}</span></td>
+      <td><span class="confidence-badge ${confidenceClass}">${(confidence * 100).toFixed(0)}%</span></td>
+      <td>${mentions}</td>
+      <td>${relationshipCount}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+// Display relationships
+function displayRelationships(relations) {
+  const tbody = document.getElementById('relationships-table-body');
+  tbody.innerHTML = '';
+
+  if (relations.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center">No relationships found</td></tr>';
+    return;
+  }
+
+  relations.forEach(relation => {
+    const row = document.createElement('tr');
+    const sourceEntity = relation.sourceEntity || '--';
+    const relationType = relation.type || '--';
+    const targetEntity = relation.targetEntity || '--';
+    const confidence = relation.confidence || 0;
+
+    const confidenceClass = confidence >= 0.8 ? 'confidence-high' : confidence >= 0.5 ? 'confidence-medium' : 'confidence-low';
+
+    row.innerHTML = `
+      <td><strong>${sourceEntity}</strong></td>
+      <td><span class="entity-tag">${relationType}</span></td>
+      <td><strong>${targetEntity}</strong></td>
+      <td><span class="confidence-badge ${confidenceClass}">${(confidence * 100).toFixed(0)}%</span></td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+// Display questions
+function displayQuestions(questions) {
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+
+  if (questions.length === 0) {
+    container.innerHTML = '<p class="text-muted">No questions generated</p>';
+    return;
+  }
+
+  // Group questions by type
+  const groupedQuestions = {};
+  questions.forEach(q => {
+    const type = q.type || 'General';
+    if (!groupedQuestions[type]) {
+      groupedQuestions[type] = [];
+    }
+    groupedQuestions[type].push(q);
+  });
+
+  // Display grouped questions
+  Object.keys(groupedQuestions).forEach(type => {
+    const group = document.createElement('div');
+    group.className = 'question-group';
+
+    const header = document.createElement('div');
+    header.className = 'question-group-header';
+    header.textContent = `${type} (${groupedQuestions[type].length})`;
+    group.appendChild(header);
+
+    groupedQuestions[type].forEach(q => {
+      const item = document.createElement('div');
+      item.className = 'question-item';
+
+      const questionText = document.createElement('div');
+      questionText.className = 'question-text';
+      questionText.textContent = q.question || '--';
+      item.appendChild(questionText);
+
+      if (q.answer) {
+        const answer = document.createElement('div');
+        answer.className = 'question-answer';
+        answer.textContent = q.answer;
+        item.appendChild(answer);
+      }
+
+      group.appendChild(item);
+    });
+
+    container.appendChild(group);
+  });
+}
+
+// Helper function to truncate text
+function truncate(text, maxLength) {
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + '...';
+}
+
+// Toggle section visibility
+function toggleSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section.style.display === 'none') {
+    section.style.display = 'block';
+  } else {
+    section.style.display = 'none';
   }
 }
 

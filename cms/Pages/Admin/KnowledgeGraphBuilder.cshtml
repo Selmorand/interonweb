@@ -76,6 +76,109 @@
     font-size: 2rem;
     margin-bottom: 0.5rem;
   }
+
+  .table-container {
+    overflow-x: auto;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .data-table th {
+    background: var(--bg-surface);
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--glass-border);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .data-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .data-table tbody tr:hover {
+    background: var(--bg-surface);
+  }
+
+  .entity-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .confidence-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .confidence-high { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+  .confidence-medium { background: rgba(245, 127, 32, 0.15); color: var(--accent-orange); }
+  .confidence-low { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+  .question-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .question-group-header {
+    background: var(--bg-surface);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .question-item {
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+  }
+
+  .question-text {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .question-answer {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--accent-blue);
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .justify-between {
+    justify-content: space-between;
+  }
+
+  .align-center {
+    align-items: center;
+  }
+
+  .mt-3 {
+    margin-top: 1rem;
+  }
+
+  .btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
 </style>
 }
 
@@ -158,9 +261,20 @@
 
   <!-- Results Display -->
   <div id="results-container" class="hidden">
+    <!-- Site Overview -->
+    <div class="card mb-4">
+      <h2 class="mb-3">Site Overview</h2>
+      <div id="site-overview">
+        <p><strong>Domain:</strong> <span id="site-domain">--</span></p>
+        <p><strong>Root URL:</strong> <span id="site-url">--</span></p>
+        <p><strong>Crawl Date:</strong> <span id="crawl-date">--</span></p>
+        <p><strong>Status:</strong> <span id="site-status" class="status-badge">--</span></p>
+      </div>
+    </div>
+
     <!-- Summary Stats -->
     <div class="card mb-4">
-      <h2 class="mb-3">Analysis Summary</h2>
+      <h2 class="mb-3">Crawl Summary</h2>
       <div class="grid grid-3">
         <div class="text-center">
           <div class="feature-icon">📄</div>
@@ -178,18 +292,123 @@
           <p class="text-muted">Relationships</p>
         </div>
       </div>
+      <div class="grid grid-3 mt-3">
+        <div class="text-center">
+          <div class="feature-icon">❓</div>
+          <h3 id="total-questions" class="mb-1">--</h3>
+          <p class="text-muted">Questions Generated</p>
+        </div>
+        <div class="text-center">
+          <div class="feature-icon">⚡</div>
+          <h3 id="max-depth-reached" class="mb-1">--</h3>
+          <p class="text-muted">Max Depth Reached</p>
+        </div>
+        <div class="text-center">
+          <div class="feature-icon">⏱️</div>
+          <h3 id="crawl-duration" class="mb-1">--</h3>
+          <p class="text-muted">Duration</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pages Section -->
+    <div class="card mb-4">
+      <div class="flex justify-between align-center mb-3">
+        <h2>Pages Crawled</h2>
+        <button class="btn btn-secondary btn-sm" onclick="toggleSection('pages-list')">Toggle</button>
+      </div>
+      <div id="pages-list" class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>URL</th>
+              <th>Title</th>
+              <th>Depth</th>
+              <th>Entities</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="pages-table-body">
+            <tr>
+              <td colspan="5" class="text-center">Loading pages...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Entity Types -->
     <div class="card mb-4">
       <h2 class="mb-3">Entity Distribution</h2>
-      <div id="entity-types-container"></div>
+      <div id="entity-types-container" class="entity-tags-container"></div>
+    </div>
+
+    <!-- Entities Section -->
+    <div class="card mb-4">
+      <div class="flex justify-between align-center mb-3">
+        <h2>Entities</h2>
+        <button class="btn btn-secondary btn-sm" onclick="toggleSection('entities-list')">Toggle</button>
+      </div>
+      <div id="entities-list" class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Confidence</th>
+              <th>Mentions</th>
+              <th>Relationships</th>
+            </tr>
+          </thead>
+          <tbody id="entities-table-body">
+            <tr>
+              <td colspan="5" class="text-center">Loading entities...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Top Entities -->
     <div class="card mb-4">
       <h2 class="mb-3">Most Connected Entities</h2>
       <div id="top-entities-container"></div>
+    </div>
+
+    <!-- Relationships Section -->
+    <div class="card mb-4">
+      <div class="flex justify-between align-center mb-3">
+        <h2>Entity Relationships</h2>
+        <button class="btn btn-secondary btn-sm" onclick="toggleSection('relationships-list')">Toggle</button>
+      </div>
+      <div id="relationships-list" class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Source Entity</th>
+              <th>Relationship</th>
+              <th>Target Entity</th>
+              <th>Confidence</th>
+            </tr>
+          </thead>
+          <tbody id="relationships-table-body">
+            <tr>
+              <td colspan="4" class="text-center">Loading relationships...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Questions Section -->
+    <div class="card mb-4">
+      <div class="flex justify-between align-center mb-3">
+        <h2>Question Bank</h2>
+        <button class="btn btn-secondary btn-sm" onclick="toggleSection('questions-list')">Toggle</button>
+      </div>
+      <div id="questions-list">
+        <div id="questions-container"></div>
+      </div>
     </div>
 
     <!-- Export Options -->
