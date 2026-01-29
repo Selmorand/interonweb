@@ -1,0 +1,303 @@
+@page
+@model InteronBlog.Pages.OverviewModel
+@{
+    ViewData["Title"] = "Site Knowledge Graph - Overview";
+    ViewData["Description"] = "Transform any website into a structured knowledge graph with AI-powered entity extraction, relationship mapping, and intelligent question generation.";
+    ViewData["CanonicalUrl"] = "https://interon.co.za/overview/";
+    ViewData["SchemaJson"] = @"{
+  ""@context"": ""https://schema.org"",
+  ""@type"": ""WebPage"",
+  ""name"": ""Site Knowledge Graph - Overview"",
+  ""description"": ""Intelligent web crawler and knowledge extraction system that analyzes websites to create structured, machine-readable knowledge bases.""
+}";
+}
+
+@section Head {
+<style>
+  /* Override hero padding for overview page only */
+  .hero-overview {
+    padding: 5rem 0 3rem !important;
+  }
+
+  @@media (max-width: 768px) {
+    .hero-overview {
+      padding: 3rem 0 2rem !important;
+    }
+  }
+</style>
+}
+
+<!-- Hero Section -->
+<section class="hero hero-overview section">
+  <div class="container">
+    <h1>Site Knowledge Graph</h1>
+    <p>Transform any website into a structured knowledge graph with AI-powered entity extraction, relationship mapping, and intelligent question generation</p>
+  </div>
+</section>
+
+<!-- What It Does -->
+<section class="section">
+  <div class="container">
+    <h2 class="text-center mb-4">What Does This Tool Do?</h2>
+    <div class="prose" style="max-width: 800px; margin: 0 auto 3rem;">
+      <p><strong>Site Knowledge Graph</strong> is an intelligent web crawler and knowledge extraction system that analyzes websites to create structured, machine-readable knowledge bases. Perfect for AI training, content analysis, and data-driven insights.</p>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card text-center">
+        <div class="feature-icon">100%</div>
+        <h3>Automated</h3>
+        <p>Fully automated extraction and analysis</p>
+      </div>
+      <div class="card text-center">
+        <div class="feature-icon">5+</div>
+        <h3>Export Formats</h3>
+        <p>Multiple output formats for any use case</p>
+      </div>
+      <div class="card text-center">
+        <div class="feature-icon">∞</div>
+        <h3>Use Cases</h3>
+        <p>Unlimited applications and scenarios</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="section section-alt">
+  <div class="container">
+    <h2 class="text-center mb-4">How It Works</h2>
+    <div class="grid grid-3">
+      <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>1. Submit URL</h3>
+        <p>Enter any website URL with custom depth and page limits</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🕷️</div>
+        <h3>2. Intelligent Crawl</h3>
+        <p>Respects robots.txt, handles JavaScript, and extracts clean content</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <h3>3. Entity Extraction</h3>
+        <p>AI identifies entities: organizations, products, services, concepts</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>4. Build Graph</h3>
+        <p>Maps relationships between entities to create knowledge graph</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">❓</div>
+        <h3>5. Generate Questions</h3>
+        <p>Creates AI-ready question sets derived from content and relationships</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>6. Export Report</h3>
+        <p>Download in multiple formats: PDF, JSON, CSV</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- The Report -->
+<section class="section">
+  <div class="container">
+    <h2 class="text-center mb-4">The Comprehensive Report</h2>
+    <p class="text-center" style="max-width: 800px; margin: 0 auto 3rem;">Each analysis generates a detailed, multi-section report that provides deep insights into the website's content and structure:</p>
+
+    <div class="grid grid-3">
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>Site Overview</h3>
+        <p>Domain info, crawl status, timestamps, and metadata about the analyzed website</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <h3>Crawl Summary</h3>
+        <p>Total pages, depth analysis, fetch methods (HTTP vs JavaScript), and crawl duration</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <h3>Pages & Structure</h3>
+        <p>Complete page inventory with URLs, titles, depth levels, and entity counts</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏢</div>
+        <h3>Entity Summary</h3>
+        <p>All extracted entities with types, confidence scores, mentions, and relationships</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>Relationships Map</h3>
+        <p>Connections between entities with relationship types, weights, and sources</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">❓</div>
+        <h3>Question Bank</h3>
+        <p>AI-generated questions grouped by type and complexity level with confidence scores</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Export Options -->
+<section class="section section-alt">
+  <div class="container">
+    <h2 class="text-center mb-4">Powerful Export Options</h2>
+    <p class="text-center" style="max-width: 800px; margin: 0 auto 2rem;">Every report comes with <strong>multiple export formats</strong> designed for different use cases. All exports are generated from the same analysis data, ensuring consistency:</p>
+
+    <div class="action-buttons mb-4">
+      <span class="btn btn-secondary">📄 PDF Report</span>
+      <span class="btn btn-secondary">🤖 JSON (AI-Ready)</span>
+      <span class="btn btn-secondary">📊 Pages CSV</span>
+      <span class="btn btn-secondary">🏢 Entities CSV</span>
+      <span class="btn btn-secondary">🔗 Relationships CSV</span>
+      <span class="btn btn-secondary">❓ Questions JSON</span>
+      <span class="btn btn-secondary">📋 Questions CSV</span>
+    </div>
+
+    <div class="prose" style="max-width: 800px; margin: 0 auto;">
+      <h3>📄 PDF Report</h3>
+      <p>Print-ready, professionally formatted document with all sections, tables, and visualizations. Perfect for presentations and documentation.</p>
+
+      <h3>🤖 AI-Ready JSON</h3>
+      <p>Structured JSON format optimized for AI/ML pipelines, RAG systems, and programmatic processing. Includes full entity graph with relationships.</p>
+
+      <h3>📊 CSV Exports</h3>
+      <p><strong>Three separate CSV files:</strong></p>
+      <ul>
+        <li><strong>Pages CSV:</strong> URL, title, depth, status, word count, entity count</li>
+        <li><strong>Entities CSV:</strong> Name, type, source, confidence, mention count, relations</li>
+        <li><strong>Relationships CSV:</strong> From entity, relation type, to entity, weight, source</li>
+      </ul>
+      <p>Perfect for Excel analysis, database imports, and custom processing.</p>
+
+      <h3>❓ Question Bank Exports</h3>
+      <p>AI-generated questions in JSON and CSV formats with question text, type, level, confidence, and source entities. Ready for training chatbots, creating FAQs, or testing comprehension models.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Key Features -->
+<section class="section">
+  <div class="container">
+    <h2 class="text-center mb-4">Key Features</h2>
+
+    <div class="grid grid-2" style="gap: 2rem;">
+      <div class="card">
+        <h3 style="margin-bottom: 1rem;">🛡️ Ethical & Compliant Crawling</h3>
+        <ul>
+          <li>Respects robots.txt and crawl-delay directives</li>
+          <li>Permission-first approach - only crawl authorized sites</li>
+          <li>Rate limiting to avoid server overload</li>
+          <li>Duplicate detection via content hashing</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom: 1rem;">🧠 Intelligent Extraction</h3>
+        <ul>
+          <li>AI-powered entity recognition (organizations, products, services, concepts)</li>
+          <li>Automatic relationship detection and mapping</li>
+          <li>Confidence scoring for every extraction</li>
+          <li>Source tracking for full traceability</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom: 1rem;">⚡ Real-Time Progress Tracking</h3>
+        <ul>
+          <li>Live progress bar showing pages processed</li>
+          <li>Phase indicators: Crawling → Building Graph → Generating Report</li>
+          <li>Auto-refresh interface for seamless monitoring</li>
+          <li>Error handling with detailed diagnostics</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom: 1rem;">📊 Rich Question Generation</h3>
+        <ul>
+          <li><strong>7 Question Types:</strong> Definition, How-To, Capability, Relationship, Coverage, Comparison, Gap Analysis</li>
+          <li><strong>4 Complexity Levels:</strong> Content Chunk, Page, Entity, Knowledge Graph</li>
+          <li>Confidence scores for answer reliability</li>
+          <li>AI guidance for interrogation best practices</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Use Cases -->
+<section class="section section-alt">
+  <div class="container">
+    <h2 class="text-center mb-4">Use Cases</h2>
+    <div class="grid grid-3">
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>AI Training Data</h3>
+        <p>Generate structured datasets for training chatbots, RAG systems, and knowledge-based AI models</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Competitive Analysis</h3>
+        <p>Analyze competitor websites to understand their offerings, messaging, and structure</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📚</div>
+        <h3>Content Audits</h3>
+        <p>Review your own website's content structure, entity coverage, and information architecture</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>Knowledge Graphs</h3>
+        <p>Build enterprise knowledge graphs from public documentation and resources</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📖</div>
+        <h3>Documentation Mining</h3>
+        <p>Extract structured information from technical docs, wikis, and help centers</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎓</div>
+        <h3>Educational Content</h3>
+        <p>Create Q&A datasets and study materials from educational websites</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Technical Highlights -->
+<section class="section">
+  <div class="container">
+    <h2 class="text-center mb-4">Technical Architecture</h2>
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+      <pre style="background: var(--bg-base); padding: 1.5rem; border-radius: var(--radius); overflow-x: auto; margin: 0;">
+<strong>Stack:</strong> Node.js + TypeScript + Fastify
+<strong>Database:</strong> PostgreSQL (structured data) + Redis (queue/cache)
+<strong>Crawling:</strong> HTTP + Playwright (JavaScript rendering)
+<strong>Extraction:</strong> AI-powered entity recognition
+<strong>Deployment:</strong> Railway (managed services)
+
+<strong>Features:</strong>
+✓ Type-safe with Prisma ORM
+✓ Redis-backed job queue
+✓ Parallel processing
+✓ Content deduplication
+✓ Relationship graph building
+✓ Multi-format exports
+      </pre>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-alt">
+  <div class="container text-center">
+    <h2>Ready to Extract Knowledge?</h2>
+    <p style="font-size: 1.2rem; margin: 1.5rem auto; max-width: 700px;">Transform any website into structured knowledge in minutes. Just enter a URL and let the AI do the rest.</p>
+    <a href="#" class="btn btn-primary btn-lg">🔍 Try It Now</a>
+  </div>
+</section>

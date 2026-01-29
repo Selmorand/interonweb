@@ -60,6 +60,7 @@ body {
   background: var(--bg-deep);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  padding-top: 80px; /* Account for fixed header */
 }
 
 /* Subtle Background Pattern */
@@ -1013,6 +1014,8 @@ strong { color: var(--text-primary); font-weight: 500; }
    RESPONSIVE
    =========================================== */
 @media (max-width: 768px) {
+  body { padding-top: 70px; }
+
   h1 { font-size: 2.25rem; }
   h2 { font-size: 1.5rem; }
 

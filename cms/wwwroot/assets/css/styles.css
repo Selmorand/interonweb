@@ -60,13 +60,7 @@ body {
   background: var(--bg-deep);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-}
-
-/* Main content area - add space for fixed header */
-main {
-  padding-top: 5rem;
-  position: relative;
-  z-index: 1;
+  padding-top: 80px; /* Account for fixed header */
 }
 
 /* Subtle Background Pattern */
@@ -133,11 +127,6 @@ strong { color: var(--text-primary); font-weight: 500; }
 .section {
   padding: 5rem 0;
   position: relative;
-}
-
-/* First section after header needs less top padding since main has padding-top */
-.section:first-child {
-  padding-top: 3rem;
 }
 
 /* ===========================================
@@ -337,14 +326,13 @@ strong { color: var(--text-primary); font-weight: 500; }
    HERO
    =========================================== */
 .hero {
-  padding: 8rem 0 6rem;
+  padding: 10rem 0 6rem;
   text-align: center;
   position: relative;
   background: url('/assets/images/hero.webp') center center / cover no-repeat;
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
   width: 100vw;
-  margin-top: -5rem; /* Compensate for main padding */
 }
 
 .hero::before {
@@ -1026,23 +1014,13 @@ strong { color: var(--text-primary); font-weight: 500; }
    RESPONSIVE
    =========================================== */
 @media (max-width: 768px) {
+  body { padding-top: 70px; }
+
   h1 { font-size: 2.25rem; }
   h2 { font-size: 1.5rem; }
 
-  /* Adjust main padding for mobile */
-  main { padding-top: 4rem; }
-
-  /* Hero compensates for smaller main padding */
-  .hero {
-    padding: 6rem 0 4rem;
-    margin-top: -4rem;
-  }
-
-  /* Regular sections */
+  .hero { padding: 8rem 0 4rem; }
   .section { padding: 3rem 0; }
-
-  /* First section gets 3rem top padding on mobile */
-  .section:first-child { padding-top: 3rem; }
 
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
 
