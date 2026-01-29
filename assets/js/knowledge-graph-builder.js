@@ -227,27 +227,42 @@ function displaySiteOverview(summary) {
   const crawlDate = summary.crawlDate ? new Date(summary.crawlDate).toLocaleString() : new Date().toLocaleString();
   const status = summary.status || 'COMPLETED';
 
-  document.getElementById('site-domain').textContent = domain;
-  document.getElementById('site-url').textContent = url;
-  document.getElementById('crawl-date').textContent = crawlDate;
-
+  const domainEl = document.getElementById('site-domain');
+  const urlEl = document.getElementById('site-url');
+  const crawlDateEl = document.getElementById('crawl-date');
   const statusBadge = document.getElementById('site-status');
-  statusBadge.textContent = status;
-  statusBadge.className = 'status-badge status-' + status.toLowerCase();
+
+  if (domainEl) domainEl.textContent = domain;
+  if (urlEl) urlEl.textContent = url;
+  if (crawlDateEl) crawlDateEl.textContent = crawlDate;
+
+  if (statusBadge) {
+    statusBadge.textContent = status;
+    statusBadge.className = 'status-badge status-' + status.toLowerCase();
+  }
 }
 
 // Display results in UI
 function displayResults(summary, totalPages, totalQuestions) {
-  // Update summary stats
-  document.getElementById('total-pages').textContent = totalPages;
-  document.getElementById('total-entities').textContent = summary.totalEntities || 0;
-  document.getElementById('total-relationships').textContent = summary.totalRelations || 0;
-  document.getElementById('total-questions').textContent = totalQuestions;
-  document.getElementById('max-depth-reached').textContent = summary.maxDepthReached || '--';
-  document.getElementById('crawl-duration').textContent = summary.duration || '--';
+  // Update summary stats with null checks
+  const totalPagesEl = document.getElementById('total-pages');
+  const totalEntitiesEl = document.getElementById('total-entities');
+  const totalRelationshipsEl = document.getElementById('total-relationships');
+  const totalQuestionsEl = document.getElementById('total-questions');
+  const maxDepthEl = document.getElementById('max-depth-reached');
+  const crawlDurationEl = document.getElementById('crawl-duration');
+
+  if (totalPagesEl) totalPagesEl.textContent = totalPages;
+  if (totalEntitiesEl) totalEntitiesEl.textContent = summary.totalEntities || 0;
+  if (totalRelationshipsEl) totalRelationshipsEl.textContent = summary.totalRelations || 0;
+  if (totalQuestionsEl) totalQuestionsEl.textContent = totalQuestions;
+  if (maxDepthEl) maxDepthEl.textContent = summary.maxDepthReached || '--';
+  if (crawlDurationEl) crawlDurationEl.textContent = summary.duration || '--';
 
   // Display top entities
   const topEntitiesContainer = document.getElementById('top-entities-container');
+  if (!topEntitiesContainer) return;
+
   topEntitiesContainer.innerHTML = '';
 
   if (summary.mostConnectedEntities && summary.mostConnectedEntities.length > 0) {
@@ -271,9 +286,11 @@ function displayResults(summary, totalPages, totalQuestions) {
 // Display pages
 function displayPages(pages) {
   const tbody = document.getElementById('pages-table-body');
+  if (!tbody) return;
+
   tbody.innerHTML = '';
 
-  if (pages.length === 0) {
+  if (!pages || pages.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" class="text-center">No pages found</td></tr>';
     return;
   }
@@ -301,24 +318,28 @@ function displayPages(pages) {
 function displayEntities(entities, entityTypes) {
   // Display entity type distribution
   const entityTypesContainer = document.getElementById('entity-types-container');
-  entityTypesContainer.innerHTML = '';
+  if (entityTypesContainer) {
+    entityTypesContainer.innerHTML = '';
 
-  if (entityTypes && entityTypes.length > 0) {
-    entityTypes.forEach(({ type, count }) => {
-      const tag = document.createElement('span');
-      tag.className = 'entity-tag';
-      tag.textContent = `${type}: ${count}`;
-      entityTypesContainer.appendChild(tag);
-    });
-  } else {
-    entityTypesContainer.innerHTML = '<p class="text-muted">No entities found</p>';
+    if (entityTypes && entityTypes.length > 0) {
+      entityTypes.forEach(({ type, count }) => {
+        const tag = document.createElement('span');
+        tag.className = 'entity-tag';
+        tag.textContent = `${type}: ${count}`;
+        entityTypesContainer.appendChild(tag);
+      });
+    } else {
+      entityTypesContainer.innerHTML = '<p class="text-muted">No entities found</p>';
+    }
   }
 
   // Display entities table
   const tbody = document.getElementById('entities-table-body');
+  if (!tbody) return;
+
   tbody.innerHTML = '';
 
-  if (entities.length === 0) {
+  if (!entities || entities.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" class="text-center">No entities found</td></tr>';
     return;
   }
@@ -347,9 +368,11 @@ function displayEntities(entities, entityTypes) {
 // Display relationships
 function displayRelationships(relations) {
   const tbody = document.getElementById('relationships-table-body');
+  if (!tbody) return;
+
   tbody.innerHTML = '';
 
-  if (relations.length === 0) {
+  if (!relations || relations.length === 0) {
     tbody.innerHTML = '<tr><td colspan="4" class="text-center">No relationships found</td></tr>';
     return;
   }
@@ -376,9 +399,11 @@ function displayRelationships(relations) {
 // Display questions
 function displayQuestions(questions) {
   const container = document.getElementById('questions-container');
+  if (!container) return;
+
   container.innerHTML = '';
 
-  if (questions.length === 0) {
+  if (!questions || questions.length === 0) {
     container.innerHTML = '<p class="text-muted">No questions generated</p>';
     return;
   }
