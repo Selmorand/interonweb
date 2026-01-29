@@ -75,3 +75,8 @@ cms/publish-temp/
 DEMO.html
 Integrate.txt
 Website.sln
+
+# Old static HTML files (migrated to CMS)
+*.html
+learn/
+services/
