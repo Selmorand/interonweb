@@ -40,6 +40,10 @@
                     <span class="admin-nav-icon">&#128376;</span>
                     Knowledge Graph Builder
                 </a>
+                <a href="/admin/users" class="admin-nav-item @(ViewContext.RouteData.Values["page"]?.ToString() == "/Admin/Users" ? "active" : "")">
+                    <span class="admin-nav-icon">&#128100;</span>
+                    Users
+                </a>
                 <a href="https://web-production-9ed67.up.railway.app/reports" class="admin-nav-item" target="_blank">
                     <span class="admin-nav-icon">&#128196;</span>
                     View All Reports

@@ -71,6 +71,10 @@ cms/publish/
 cms/.publish-temp/
 cms/publish-temp/
 
+# User data and authentication
+cms/App_Data/
+users.json
+
 # Old/demo files
 DEMO.html
 Integrate.txt
@@ -78,5 +82,5 @@ Website.sln
 
 # Old static HTML files (migrated to CMS)
 *.html
-learn/
-services/
+/learn/
+/services/

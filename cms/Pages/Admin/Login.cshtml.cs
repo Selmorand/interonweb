@@ -1,22 +1,25 @@
+using InteronBlog.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace InteronBlog.Pages.Admin;
 
 public class LoginModel : PageModel
 {
-    private readonly SiteSettings _settings;
+    private readonly UserAuthenticationService _authService;
     private readonly ILogger<LoginModel> _logger;
 
-    public LoginModel(IOptions<SiteSettings> settings, ILogger<LoginModel> logger)
+    public LoginModel(UserAuthenticationService authService, ILogger<LoginModel> logger)
     {
-        _settings = settings.Value;
+        _authService = authService;
         _logger = logger;
     }
+
+    [BindProperty]
+    public string Username { get; set; } = "";
 
     [BindProperty]
     public string Password { get; set; } = "";
@@ -38,19 +41,29 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
+        if (string.IsNullOrEmpty(Username))
+        {
+            ErrorMessage = "Username is required";
+            return Page();
+        }
+
         if (string.IsNullOrEmpty(Password))
         {
             ErrorMessage = "Password is required";
             return Page();
         }
 
-        // Verify password
-        if (Password == _settings.AdminPassword)
+        // Validate user credentials
+        var user = await _authService.ValidateUserAsync(Username, Password);
+
+        if (user != null)
         {
+            // Successful login
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, "Admin"),
-                new Claim(ClaimTypes.Role, "Administrator")
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -65,13 +78,23 @@ public class LoginModel : PageModel
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
 
-            _logger.LogInformation("Admin logged in successfully");
+            _logger.LogInformation("User {Username} logged in successfully", user.Username);
 
             return LocalRedirect(returnUrl ?? "/admin/");
         }
 
-        _logger.LogWarning("Failed login attempt");
-        ErrorMessage = "Invalid password";
+        // Check if account is locked
+        var lockedUser = await _authService.GetUserByUsernameAsync(Username);
+        if (lockedUser?.LockedUntil.HasValue == true && lockedUser.LockedUntil.Value > DateTime.UtcNow)
+        {
+            var minutesRemaining = (int)(lockedUser.LockedUntil.Value - DateTime.UtcNow).TotalMinutes;
+            ErrorMessage = $"Account is locked due to too many failed login attempts. Please try again in {minutesRemaining} minutes.";
+        }
+        else
+        {
+            ErrorMessage = "Invalid username or password";
+        }
+
         return Page();
     }
 }

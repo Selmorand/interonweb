@@ -1,0 +1,195 @@
+@page
+@model InteronBlog.Pages.Admin.UsersModel
+@{
+    ViewData["Title"] = "User Management";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">
+        @Model.SuccessMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-error">
+        @Model.ErrorMessage
+    </div>
+}
+
+<!-- Current Users -->
+<div class="card mb-4">
+    <h2 class="mb-3">Current Users</h2>
+
+    <div class="table-responsive">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Created</th>
+                    <th>Last Login</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>
+                            @user.Username
+                            @if (user.Username == User.Identity?.Name)
+                            {
+                                <span class="badge badge-primary">You</span>
+                            }
+                        </td>
+                        <td>@user.Role</td>
+                        <td>@user.CreatedAt.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            @if (user.LastLoginAt.HasValue)
+                            {
+                                @user.LastLoginAt.Value.ToString("yyyy-MM-dd HH:mm")
+                            }
+                            else
+                            {
+                                <span class="text-muted">Never</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.LockedUntil.HasValue && user.LockedUntil.Value > DateTime.UtcNow)
+                            {
+                                <span class="badge badge-error">Locked</span>
+                            }
+                            else if (user.IsActive)
+                            {
+                                <span class="badge badge-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-secondary">Inactive</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Create New User -->
+<div class="card mb-4">
+    <h2 class="mb-3">Create New User</h2>
+
+    <form method="post" asp-page-handler="CreateUser">
+        <div class="grid grid-2 mb-3">
+            <div>
+                <label for="new-username" class="form-label">Username</label>
+                <input type="text" id="new-username" asp-for="NewUsername" class="audit-input" required>
+            </div>
+            <div>
+                <label for="new-password" class="form-label">Password</label>
+                <input type="password" id="new-password" asp-for="NewPassword" class="audit-input" required>
+                <small class="text-muted">Minimum 8 characters</small>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create User</button>
+    </form>
+</div>
+
+<!-- Change Your Password -->
+<div class="card mb-4">
+    <h2 class="mb-3">Change Your Password</h2>
+
+    <form method="post" asp-page-handler="ChangePassword">
+        <div class="grid grid-2 mb-3">
+            <div>
+                <label for="current-password" class="form-label">Current Password</label>
+                <input type="password" id="current-password" asp-for="CurrentPassword" class="audit-input" required>
+            </div>
+            <div>
+                <label for="new-password-change" class="form-label">New Password</label>
+                <input type="password" id="new-password-change" asp-for="NewPasswordForChange" class="audit-input" required>
+                <small class="text-muted">Minimum 8 characters</small>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Change Password</button>
+    </form>
+</div>
+
+<style>
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge-primary {
+        background: rgba(2, 84, 122, 0.15);
+        color: var(--accent-blue);
+    }
+
+    .badge-success {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+    }
+
+    .badge-error {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+    }
+
+    .badge-secondary {
+        background: var(--bg-surface);
+        color: var(--text-secondary);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    .admin-table th {
+        font-weight: 600;
+        background: var(--bg-surface);
+    }
+
+    .admin-table tbody tr:hover {
+        background: var(--bg-surface);
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: var(--radius);
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-success {
+        background: rgba(34, 197, 94, 0.15);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #22c55e;
+    }
+
+    .alert-error {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+    }
+</style>
