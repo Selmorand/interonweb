@@ -80,7 +80,7 @@ public class BlogService
     public async Task<List<BlogPost>> GetPostsByCategoryAsync(string categorySlug, bool includeUnpublished = false)
     {
         var posts = await GetAllPostsAsync(includeUnpublished);
-        return posts.Where(p => p.Category.Equals(categorySlug, StringComparison.OrdinalIgnoreCase)).ToList();
+        return posts.Where(p => !string.IsNullOrEmpty(p.Category) && p.Category.Equals(categorySlug, StringComparison.OrdinalIgnoreCase)).ToList();
     }
 
     public async Task<List<BlogPost>> GetPostsByTagAsync(string tag, bool includeUnpublished = false)
