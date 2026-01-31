@@ -16,10 +16,15 @@ Write-Host "[1/7] Repository path: $repoPath" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "[2/7] Stopping IIS app pool..." -ForegroundColor Yellow
 try {
-    Import-Module WebAdministration -ErrorAction Stop
-    Stop-WebAppPool -Name 'InsightsPool' -ErrorAction Stop
-    Start-Sleep -Seconds 3
-    Write-Host "  [OK] App pool stopped" -ForegroundColor Green
+    # Use appcmd.exe instead of PowerShell module (more reliable)
+    $appcmd = "$env:SystemRoot\System32\inetsrv\appcmd.exe"
+    if (Test-Path $appcmd) {
+        & $appcmd stop apppool /apppool.name:"InsightsPool" | Out-Null
+        Start-Sleep -Seconds 3
+        Write-Host "  [OK] App pool stopped" -ForegroundColor Green
+    } else {
+        throw "appcmd.exe not found"
+    }
 }
 catch {
     Write-Host "  [WARNING] Could not stop app pool: $($_.Exception.Message)" -ForegroundColor Yellow
@@ -82,13 +87,19 @@ catch {
     Write-Host "  App pool will auto-reload on file changes" -ForegroundColor Gray
 }
 
-# Step 6: Start app pool (if IIS module worked)
+# Step 6: Start app pool
 Write-Host ""
 Write-Host "[6/7] Starting application..." -ForegroundColor Yellow
 try {
-    Start-WebAppPool -Name 'InsightsPool' -ErrorAction Stop
-    Start-Sleep -Seconds 5
-    Write-Host "  [OK] App pool started" -ForegroundColor Green
+    # Use appcmd.exe instead of PowerShell module (more reliable)
+    $appcmd = "$env:SystemRoot\System32\inetsrv\appcmd.exe"
+    if (Test-Path $appcmd) {
+        & $appcmd start apppool /apppool.name:"InsightsPool" | Out-Null
+        Start-Sleep -Seconds 5
+        Write-Host "  [OK] App pool started" -ForegroundColor Green
+    } else {
+        throw "appcmd.exe not found"
+    }
 }
 catch {
     Write-Host "  [SKIPPED] App pool will auto-start" -ForegroundColor Yellow
