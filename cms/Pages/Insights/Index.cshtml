@@ -45,7 +45,7 @@
                     <div class="grid grid-2">
                         @foreach (var post in Model.FeaturedPosts)
                         {
-                            <a href="/insights/@(post.Slug).html" class="card card-hover blog-card blog-card-featured">
+                            <a href="/insights/@(post.Slug)/" class="card card-hover blog-card blog-card-featured">
                                 @if (!string.IsNullOrEmpty(post.FeaturedImage))
                                 {
                                     <div class="blog-card-image">
@@ -76,7 +76,7 @@
                 <div class="grid grid-3">
                     @foreach (var post in Model.Posts)
                     {
-                        <a href="/insights/@(post.Slug).html" class="card card-hover blog-card">
+                        <a href="/insights/@(post.Slug)/" class="card card-hover blog-card">
                             @if (!string.IsNullOrEmpty(post.FeaturedImage))
                             {
                                 <div class="blog-card-image">

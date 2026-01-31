@@ -75,7 +75,7 @@ public class PostModel : PageModel
         }
 
         // Generate schema
-        var fullUrl = $"{_settings.SiteUrl}/insights/{Post.Slug}.html";
+        var fullUrl = $"{_settings.SiteUrl}/insights/{Post.Slug}/";
         SchemaJson = _schemaService.GenerateArticleSchema(Post, fullUrl);
     }
 }

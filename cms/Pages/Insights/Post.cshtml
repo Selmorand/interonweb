@@ -14,8 +14,8 @@
     {
         ViewData["Title"] = Model.Post.GetMetaTitle();
         ViewData["Description"] = Model.Post.GetMetaDescription();
-        ViewData["CanonicalUrl"] = $"{settings.SiteUrl}/insights/{Model.Post.Slug}.html";
-        ViewData["OgUrl"] = $"{settings.SiteUrl}/insights/{Model.Post.Slug}.html";
+        ViewData["CanonicalUrl"] = $"{settings.SiteUrl}/insights/{Model.Post.Slug}/";
+        ViewData["OgUrl"] = $"{settings.SiteUrl}/insights/{Model.Post.Slug}/";
         ViewData["OgType"] = "article";
         if (!string.IsNullOrEmpty(Model.Post.FeaturedImage))
         {
@@ -96,9 +96,9 @@ else
             <!-- Share -->
             <div class="post-share">
                 <span>Share this article:</span>
-                <a href="https://twitter.com/intent/tweet?text=@Uri.EscapeDataString(Model.Post.Title)&url=@Uri.EscapeDataString($"{settings.SiteUrl}/insights/{Model.Post.Slug}.html")"
+                <a href="https://twitter.com/intent/tweet?text=@Uri.EscapeDataString(Model.Post.Title)&url=@Uri.EscapeDataString($"{settings.SiteUrl}/insights/{Model.Post.Slug}/")"
                    target="_blank" rel="noopener noreferrer" class="share-btn">Twitter</a>
-                <a href="https://www.linkedin.com/shareArticle?mini=true&url=@Uri.EscapeDataString($"{settings.SiteUrl}/insights/{Model.Post.Slug}.html")&title=@Uri.EscapeDataString(Model.Post.Title)"
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url=@Uri.EscapeDataString($"{settings.SiteUrl}/insights/{Model.Post.Slug}/")&title=@Uri.EscapeDataString(Model.Post.Title)"
                    target="_blank" rel="noopener noreferrer" class="share-btn">LinkedIn</a>
             </div>
         </div>
@@ -113,7 +113,7 @@ else
                 <div class="grid grid-3">
                     @foreach (var post in Model.RelatedPosts)
                     {
-                        <a href="/insights/@(post.Slug).html" class="card card-hover blog-card">
+                        <a href="/insights/@(post.Slug)/" class="card card-hover blog-card">
                             @if (!string.IsNullOrEmpty(post.FeaturedImage))
                             {
                                 <div class="blog-card-image">

@@ -48,7 +48,7 @@ else
                     <input type="text" id="Slug" name="Post.Slug" value="@Model.Post.Slug"
                            class="form-input" placeholder="auto-generated-from-title">
                     <small class="form-hint">
-                        Current URL: <a href="/insights/@(Model.Post.Slug).html" target="_blank">/insights/@(Model.Post.Slug).html</a>
+                        Current URL: <a href="/insights/@(Model.Post.Slug)/" target="_blank">/insights/@(Model.Post.Slug)/</a>
                     </small>
                 </div>
 
@@ -115,7 +115,7 @@ else
                     </div>
                     @if (Model.Post.IsPublished)
                     {
-                        <a href="/insights/@(Model.Post.Slug).html" class="btn btn-secondary" target="_blank" style="margin-top: 0.5rem; width: 100%; text-align: center;">
+                        <a href="/insights/@(Model.Post.Slug)/" class="btn btn-secondary" target="_blank" style="margin-top: 0.5rem; width: 100%; text-align: center;">
                             View Post
                         </a>
                     }
