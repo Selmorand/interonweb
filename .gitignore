@@ -73,6 +73,7 @@ cms/publish-temp/
 
 # User data and authentication
 cms/App_Data/
+cms/Data/
 users.json
 
 # Old/demo files
