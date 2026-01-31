@@ -10,11 +10,25 @@ Write-Host ""
 
 # Get the script directory (repo root)
 $repoPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-Write-Host "[1/6] Repository path: $repoPath" -ForegroundColor Yellow
+Write-Host "[1/7] Repository path: $repoPath" -ForegroundColor Yellow
 
-# Step 2: Build and publish
+# Step 2: Stop IIS app pool BEFORE building
 Write-Host ""
-Write-Host "[2/6] Building and publishing application..." -ForegroundColor Yellow
+Write-Host "[2/7] Stopping IIS app pool..." -ForegroundColor Yellow
+try {
+    Import-Module WebAdministration -ErrorAction Stop
+    Stop-WebAppPool -Name 'InsightsPool' -ErrorAction Stop
+    Start-Sleep -Seconds 3
+    Write-Host "  [OK] App pool stopped" -ForegroundColor Green
+}
+catch {
+    Write-Host "  [WARNING] Could not stop app pool: $($_.Exception.Message)" -ForegroundColor Yellow
+    Write-Host "  Attempting to continue anyway..." -ForegroundColor Gray
+}
+
+# Step 3: Build and publish
+Write-Host ""
+Write-Host "[3/7] Building and publishing application..." -ForegroundColor Yellow
 Set-Location "$repoPath\cms"
 dotnet clean
 dotnet restore
@@ -24,12 +38,14 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "  [OK] Build successful" -ForegroundColor Green
 } else {
     Write-Host "  [FAILED] Build failed!" -ForegroundColor Red
+    # Try to restart app pool even if build failed
+    try { Start-WebAppPool -Name 'InsightsPool' -ErrorAction SilentlyContinue } catch {}
     exit 1
 }
 
-# Step 3: Verify CSS file
+# Step 4: Verify CSS file
 Write-Host ""
-Write-Host "[3/6] Verifying deployment..." -ForegroundColor Yellow
+Write-Host "[4/7] Verifying deployment..." -ForegroundColor Yellow
 $cssPath = "C:\inetpub\wwwroot\InteronWeb\publish\wwwroot\assets\css\styles.css"
 if (Test-Path $cssPath) {
     $cssContent = Get-Content $cssPath -Raw
@@ -42,16 +58,11 @@ if (Test-Path $cssPath) {
     Write-Host "  [WARNING] CSS file missing!" -ForegroundColor Red
 }
 
-# Step 4: Configure IIS (optional - may fail if WebAdministration not available)
+# Step 5: Configure IIS (optional - may fail if WebAdministration not available)
 Write-Host ""
-Write-Host "[4/6] Configuring IIS..." -ForegroundColor Yellow
+Write-Host "[5/7] Configuring IIS..." -ForegroundColor Yellow
 try {
     Import-Module WebAdministration -ErrorAction Stop
-
-    # Stop app pool
-    Write-Host "  Stopping app pool..." -ForegroundColor Gray
-    Stop-WebAppPool -Name 'InsightsPool' -ErrorAction SilentlyContinue
-    Start-Sleep -Seconds 3
 
     # Remove old sub-application
     $oldApp = Get-WebApplication -Site "Default Web Site" -Name "cms" -ErrorAction SilentlyContinue
@@ -71,9 +82,9 @@ catch {
     Write-Host "  App pool will auto-reload on file changes" -ForegroundColor Gray
 }
 
-# Step 5: Start app pool (if IIS module worked)
+# Step 6: Start app pool (if IIS module worked)
 Write-Host ""
-Write-Host "[5/6] Starting application..." -ForegroundColor Yellow
+Write-Host "[6/7] Starting application..." -ForegroundColor Yellow
 try {
     Start-WebAppPool -Name 'InsightsPool' -ErrorAction Stop
     Start-Sleep -Seconds 5
@@ -83,9 +94,9 @@ catch {
     Write-Host "  [SKIPPED] App pool will auto-start" -ForegroundColor Yellow
 }
 
-# Step 6: Test deployment
+# Step 7: Test deployment
 Write-Host ""
-Write-Host "[6/6] Testing deployment..." -ForegroundColor Yellow
+Write-Host "[7/7] Testing deployment..." -ForegroundColor Yellow
 try {
     $response = Invoke-WebRequest -Uri "https://interon.co.za/" -UseBasicParsing -TimeoutSec 10
     if ($response.StatusCode -eq 200) {
