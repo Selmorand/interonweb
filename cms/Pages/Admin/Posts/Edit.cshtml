@@ -59,8 +59,14 @@ else
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Content *</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <label class="form-label" style="margin: 0;">Content *</label>
+                        <button type="button" id="toggleHtmlMode" class="btn btn-secondary btn-sm" style="padding: 0.25rem 0.75rem;">
+                            <span id="modeLabel">HTML</span>
+                        </button>
+                    </div>
                     <div id="editor">@Html.Raw(Model.Post.Content)</div>
+                    <textarea id="htmlEditor" class="form-textarea" style="display: none; min-height: 300px; font-family: monospace; font-size: 0.875rem;"></textarea>
                     <input type="hidden" id="Content" name="Post.Content" value="@Model.Post.Content">
                 </div>
 
@@ -202,9 +208,38 @@ else
             }
         });
 
+        // HTML mode toggle
+        let isHtmlMode = false;
+        const editorDiv = document.getElementById('editor');
+        const htmlEditor = document.getElementById('htmlEditor');
+        const toggleBtn = document.getElementById('toggleHtmlMode');
+        const modeLabel = document.getElementById('modeLabel');
+
+        toggleBtn.addEventListener('click', function() {
+            if (!isHtmlMode) {
+                // Switch to HTML mode
+                htmlEditor.value = quill.root.innerHTML;
+                editorDiv.style.display = 'none';
+                htmlEditor.style.display = 'block';
+                modeLabel.textContent = 'Visual';
+                isHtmlMode = true;
+            } else {
+                // Switch to Visual mode
+                quill.root.innerHTML = htmlEditor.value;
+                htmlEditor.style.display = 'none';
+                editorDiv.style.display = 'block';
+                modeLabel.textContent = 'HTML';
+                isHtmlMode = false;
+            }
+        });
+
         // Sync editor content to hidden input on form submit
         document.querySelector('form.post-form').addEventListener('submit', function() {
-            document.getElementById('Content').value = quill.root.innerHTML;
+            if (isHtmlMode) {
+                document.getElementById('Content').value = htmlEditor.value;
+            } else {
+                document.getElementById('Content').value = quill.root.innerHTML;
+            }
         });
 
         // Image preview
