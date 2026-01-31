@@ -10,11 +10,11 @@ Write-Host ""
 
 # Get the script directory (repo root)
 $repoPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-Write-Host "[1/7] Repository path: $repoPath" -ForegroundColor Yellow
+Write-Host "[1/8] Repository path: $repoPath" -ForegroundColor Yellow
 
 # Step 2: Stop IIS app pool BEFORE building
 Write-Host ""
-Write-Host "[2/7] Stopping IIS app pool..." -ForegroundColor Yellow
+Write-Host "[2/8] Stopping IIS app pool..." -ForegroundColor Yellow
 try {
     # Use appcmd.exe instead of PowerShell module (more reliable)
     $appcmd = "$env:SystemRoot\System32\inetsrv\appcmd.exe"
@@ -33,7 +33,7 @@ catch {
 
 # Step 3: Build and publish
 Write-Host ""
-Write-Host "[3/7] Building and publishing application..." -ForegroundColor Yellow
+Write-Host "[3/8] Building and publishing application..." -ForegroundColor Yellow
 Set-Location "$repoPath\cms"
 dotnet clean
 dotnet restore
@@ -48,9 +48,26 @@ if ($LASTEXITCODE -eq 0) {
     exit 1
 }
 
-# Step 4: Verify CSS file
+# Step 4: Ensure Data directory and files exist
 Write-Host ""
-Write-Host "[4/7] Verifying deployment..." -ForegroundColor Yellow
+Write-Host "[4/8] Ensuring data files exist..." -ForegroundColor Yellow
+$dataPath = "C:\inetpub\wwwroot\InteronWeb\publish\Data"
+if (-not (Test-Path $dataPath)) {
+    New-Item -ItemType Directory -Path $dataPath -Force | Out-Null
+    Write-Host "  [CREATED] Data directory" -ForegroundColor Yellow
+}
+
+$postsPath = "$dataPath\posts.json"
+if (-not (Test-Path $postsPath)) {
+    "[]" | Out-File -FilePath $postsPath -Encoding UTF8 -NoNewline
+    Write-Host "  [CREATED] posts.json file" -ForegroundColor Yellow
+} else {
+    Write-Host "  [OK] posts.json exists" -ForegroundColor Green
+}
+
+# Step 5: Verify CSS file
+Write-Host ""
+Write-Host "[5/8] Verifying deployment..." -ForegroundColor Yellow
 $cssPath = "C:\inetpub\wwwroot\InteronWeb\publish\wwwroot\assets\css\styles.css"
 if (Test-Path $cssPath) {
     $cssContent = Get-Content $cssPath -Raw
@@ -63,9 +80,9 @@ if (Test-Path $cssPath) {
     Write-Host "  [WARNING] CSS file missing!" -ForegroundColor Red
 }
 
-# Step 5: Configure IIS (optional - may fail if WebAdministration not available)
+# Step 6: Configure IIS (optional - may fail if WebAdministration not available)
 Write-Host ""
-Write-Host "[5/7] Configuring IIS..." -ForegroundColor Yellow
+Write-Host "[6/8] Configuring IIS..." -ForegroundColor Yellow
 try {
     Import-Module WebAdministration -ErrorAction Stop
 
@@ -87,9 +104,9 @@ catch {
     Write-Host "  App pool will auto-reload on file changes" -ForegroundColor Gray
 }
 
-# Step 6: Start app pool
+# Step 7: Start app pool
 Write-Host ""
-Write-Host "[6/7] Starting application..." -ForegroundColor Yellow
+Write-Host "[7/8] Starting application..." -ForegroundColor Yellow
 try {
     # Use appcmd.exe instead of PowerShell module (more reliable)
     $appcmd = "$env:SystemRoot\System32\inetsrv\appcmd.exe"
@@ -105,9 +122,9 @@ catch {
     Write-Host "  [SKIPPED] App pool will auto-start" -ForegroundColor Yellow
 }
 
-# Step 7: Test deployment
+# Step 8: Test deployment
 Write-Host ""
-Write-Host "[7/7] Testing deployment..." -ForegroundColor Yellow
+Write-Host "[8/8] Testing deployment..." -ForegroundColor Yellow
 try {
     $response = Invoke-WebRequest -Uri "https://interon.co.za/" -UseBasicParsing -TimeoutSec 10
     if ($response.StatusCode -eq 200) {
