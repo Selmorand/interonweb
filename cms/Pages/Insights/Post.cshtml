@@ -100,6 +100,14 @@ else
                    target="_blank" rel="noopener noreferrer" class="share-btn">Twitter</a>
                 <a href="https://www.linkedin.com/shareArticle?mini=true&url=@Uri.EscapeDataString($"{settings.SiteUrl}/insights/{Model.Post.Slug}/")&title=@Uri.EscapeDataString(Model.Post.Title)"
                    target="_blank" rel="noopener noreferrer" class="share-btn">LinkedIn</a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=@Uri.EscapeDataString($"{settings.SiteUrl}/insights/{Model.Post.Slug}/")"
+                   target="_blank" rel="noopener noreferrer" class="share-btn">Facebook</a>
+                <a href="https://wa.me/?text=@Uri.EscapeDataString($"{Model.Post.Title} - {settings.SiteUrl}/insights/{Model.Post.Slug}/")"
+                   target="_blank" rel="noopener noreferrer" class="share-btn">WhatsApp</a>
+                <a href="https://t.me/share/url?url=@Uri.EscapeDataString($"{settings.SiteUrl}/insights/{Model.Post.Slug}/")&text=@Uri.EscapeDataString(Model.Post.Title)"
+                   target="_blank" rel="noopener noreferrer" class="share-btn">Telegram</a>
+                <a href="mailto:?subject=@Uri.EscapeDataString(Model.Post.Title)&body=@Uri.EscapeDataString($"I thought you might find this interesting: {settings.SiteUrl}/insights/{Model.Post.Slug}/")"
+                   class="share-btn">Email</a>
             </div>
         </div>
     </section>
