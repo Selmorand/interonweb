@@ -32,6 +32,9 @@ public static class DefaultCategories
         new Category { Id = "schema-markup", Name = "Schema Markup", Slug = "schema-markup", Description = "Implementing structured data for better machine understanding", SortOrder = 2 },
         new Category { Id = "seo", Name = "SEO", Slug = "seo", Description = "Search engine optimization strategies and best practices", SortOrder = 3 },
         new Category { Id = "geo", Name = "GEO", Slug = "geo", Description = "Generative Engine Optimization for AI-powered search", SortOrder = 4 },
-        new Category { Id = "case-studies", Name = "Case Studies", Slug = "case-studies", Description = "Real-world examples and success stories", SortOrder = 5 }
+        new Category { Id = "aeo", Name = "AEO", Slug = "aeo", Description = "Answer Engine Optimization for voice search and AI assistants", SortOrder = 5 },
+        new Category { Id = "marketing", Name = "Marketing", Slug = "marketing", Description = "Digital marketing strategies and campaigns", SortOrder = 6 },
+        new Category { Id = "web-development", Name = "Web Development", Slug = "web-development", Description = "Web development best practices and tutorials", SortOrder = 7 },
+        new Category { Id = "case-studies", Name = "Case Studies", Slug = "case-studies", Description = "Real-world examples and success stories", SortOrder = 8 }
     };
 }
