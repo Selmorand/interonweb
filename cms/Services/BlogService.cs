@@ -151,14 +151,21 @@ public class BlogService
         post.CreatedAt = existing.CreatedAt;
         post.UpdatedAt = DateTime.UtcNow;
 
-        // Set published date if publishing for first time
-        if (post.IsPublished && !existing.IsPublished && !post.PublishedAt.HasValue)
+        // Handle publishedAt logic
+        if (post.IsPublished && !existing.IsPublished)
         {
+            // Publishing for the first time
             post.PublishedAt = DateTime.UtcNow;
+        }
+        else if (post.IsPublished && existing.IsPublished)
+        {
+            // Already published, preserve existing date
+            post.PublishedAt = existing.PublishedAt;
         }
         else if (!post.IsPublished)
         {
-            post.PublishedAt = existing.PublishedAt;
+            // Unpublishing, clear the date
+            post.PublishedAt = null;
         }
 
         posts[existingIndex] = post;
