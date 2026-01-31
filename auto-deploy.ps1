@@ -58,11 +58,22 @@ if (-not (Test-Path $dataPath)) {
 }
 
 $postsPath = "$dataPath\posts.json"
+$postsFileCreated = $false
 if (-not (Test-Path $postsPath)) {
     "[]" | Out-File -FilePath $postsPath -Encoding UTF8 -NoNewline
     Write-Host "  [CREATED] posts.json file" -ForegroundColor Yellow
+    $postsFileCreated = $true
 } else {
     Write-Host "  [OK] posts.json exists" -ForegroundColor Green
+}
+
+# Grant write permissions to IIS_IUSRS for the Data directory and files
+try {
+    icacls $dataPath /grant "IIS_IUSRS:(OI)(CI)M" /T | Out-Null
+    Write-Host "  [OK] Set write permissions for IIS" -ForegroundColor Green
+}
+catch {
+    Write-Host "  [WARNING] Could not set permissions: $($_.Exception.Message)" -ForegroundColor Yellow
 }
 
 # Step 5: Verify CSS file
